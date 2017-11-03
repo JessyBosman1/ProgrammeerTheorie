@@ -1,0 +1,5 @@
+Spacecraft,Nation,Organisation,PayloadMass (kgs),Payload (m3),Mass (kgs),BaseCost,Fuel-to-Weight
+Cygnus,USA,Nasa,2000,18.9,7400,390M,0.73
+Progress,Russia,Russian Federal Space Agency,2400,7.6,7020,175M,0.74
+Kounotori,Japan Japan Aerospace Exploration Agency,5200,14,10500,420M,0.71
+Dragon,USA,SpaceX,6000,10,12200,347M,0.72
