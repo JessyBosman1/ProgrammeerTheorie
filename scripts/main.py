@@ -106,13 +106,13 @@ for craft in spaceCraftId.keys():
 
 Cygnus = 0
 CygnusVol = 0
-Progress = []
-ProgressVol = []
-Kounotori = []
-KounotoriVol = []
-Dragon = []
-DragonVol = []
-Load = []
+Progress = 0
+ProgressVol = 0
+Kounotori = 0
+KounotoriVol = 0
+Dragon = 0
+DragonVol = 0
+Load = 0
 
 for parcel in cargoListId.keys():
     print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
