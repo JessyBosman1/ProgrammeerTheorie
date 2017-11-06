@@ -1,5 +1,6 @@
 import csv
 import os.path
+import random
 
 # open csv file with relative path
 def readFile(relativePath):
@@ -114,20 +115,24 @@ Dragon = 0
 DragonVol = 0
 CygLoad = []
 
-for parcel in cargoListId.keys():
+randomList = random.sample(range(1,101), 100)
+for i in randomList:
+    parcel = 'CL1#' + str(i)
+    print parcel
     print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
-    # 
-    tempMass = (float(spaceCraftId['Cygnus'].fuelToWeight) * (Cygnus + float(spaceCraftId['Cygnus'].mass)))
+    # Temporar
+    tempMass = ((float(spaceCraftId['Cygnus'].fuelToWeight) * (Cygnus + float(spaceCraftId['Cygnus'].mass)))) / (1 - float(spaceCraftId['Cygnus'].fuelToWeight) )
     # Put the maximum weigth of the spacecraft Cygnus in a variable
     maxMassCygnus = (float(spaceCraftId['Cygnus'].payloadMass) + float(spaceCraftId['Cygnus'].mass))
     print tempMass, maxMassCygnus
-
-    # Check of kg niet wordt overschreden als je toevoegt en daarna of payload niet
+    # Check if the payload or volume are smaller than the
+    # payload and volume when the parcel is added
     if maxMassCygnus > (tempMass + float(cargoListId[parcel].weight)) and float(spaceCraftId['Cygnus'].payload) > (CygnusVol + float(cargoListId[parcel].volume)):
-        # Verander huidige weigth
+        # Add the parcel weigth to the curent weigth
         Cygnus += float(cargoListId[parcel].weight)
-        # Verander volume
+        # Add the colume to the current weigth
         CygnusVol += float(cargoListId[parcel].volume)
+        # Add the parcel ID to the list with added parcels
         CygLoad.append(cargoListId[parcel].cargoId)
 
     # hier moet voor elke andere spacecraft
