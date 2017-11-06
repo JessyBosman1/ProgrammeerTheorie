@@ -32,6 +32,12 @@ class spaceCraft(object):
         self.baseCost = BaseCost
         self.fuelToWeight = fuelToWeight
 
+    def AlterPayloadMass(self, alterPayloadMass):
+        self.payloadMass = self.payloadMass + alterPayloadMass
+
+    def calculateFuel(self):
+        print self.mass + self.payloadMass * self.fuelToWeight / (1-self.fuelToWeight)
+
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
     # get the data for parcels from cvs
@@ -47,11 +53,11 @@ def createObjectsSpaceCraft():
         spaceCraftId[str(row['Spacecraft'])] = spaceCraft(row['Spacecraft'],
                                                          row['Nation'],
                                                          row['Organisation'],
-                                                         row['PayloadMass (kgs)'],
-                                                         row['Payload (m3)'],
-                                                         row['Mass (kgs)'],
+                                                         float(row['PayloadMass (kgs)']),
+                                                         float(row['Payload (m3)']),
+                                                         float(row['Mass (kgs)']),
                                                          row['BaseCost'],
-                                                         row['Fuel-to-Weight']
+                                                         float(row['Fuel-to-Weight'])
                                                          )
     # return dict to be able to find objects
     return spaceCraftId
@@ -116,7 +122,13 @@ DragonVol = 0
 CygLoad = []
 
 randomList = random.sample(range(1,101), 100)
-for i in randomList:
+
+print (spaceCraftId['Cygnus'].payloadMass)
+spaceCraftId['Cygnus'].AlterPayloadMass(-1000)
+print (spaceCraftId['Cygnus'].payloadMass)
+spaceCraftId['Cygnus'].calculateFuel()
+
+"""for i in randomList:
     parcel = 'CL1#' + str(i)
     print parcel
     print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
@@ -137,3 +149,4 @@ for i in randomList:
 
     # hier moet voor elke andere spacecraft
 print CygLoad
+"""
