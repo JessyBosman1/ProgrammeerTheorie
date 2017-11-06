@@ -112,7 +112,7 @@ Kounotori = 0
 KounotoriVol = 0
 Dragon = 0
 DragonVol = 0
-Load = 0
+CygLoad = []
 
 for parcel in cargoListId.keys():
     print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
