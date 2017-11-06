@@ -103,3 +103,32 @@ for craft in spaceCraftId.keys():
     # omdat ie nu gaat zoeken naar een instance van de class met de naam craft
     # ipv de variabele waar craft voor staat in de for loop
     print (spaceCraftId[craft].payload)
+
+Cygnus = 0
+CygnusVol = 0
+Progress = []
+ProgressVol = []
+Kounotori = []
+KounotoriVol = []
+Dragon = []
+DragonVol = []
+Load = []
+
+for parcel in cargoListId.keys():
+    print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
+    # 
+    tempMass = (float(spaceCraftId['Cygnus'].fuelToWeight) * (Cygnus + float(spaceCraftId['Cygnus'].mass)))
+    # Put the maximum weigth of the spacecraft Cygnus in a variable
+    maxMassCygnus = (float(spaceCraftId['Cygnus'].payloadMass) + float(spaceCraftId['Cygnus'].mass))
+    print tempMass, maxMassCygnus
+
+    # Check of kg niet wordt overschreden als je toevoegt en daarna of payload niet
+    if maxMassCygnus > (tempMass + float(cargoListId[parcel].weight)) and float(spaceCraftId['Cygnus'].payload) > (CygnusVol + float(cargoListId[parcel].volume)):
+        # Verander huidige weigth
+        Cygnus += float(cargoListId[parcel].weight)
+        # Verander volume
+        CygnusVol += float(cargoListId[parcel].volume)
+        CygLoad.append(cargoListId[parcel].cargoId)
+
+    # hier moet voor elke andere spacecraft
+print CygLoad
