@@ -32,8 +32,8 @@ class spaceCraft(object):
         self.fuelToWeight = fuelToWeight
 
 def createObjectsSpaceCraft():
-    '''Create an instance of each spacecrafts with Class spaceCraft '''
-    # get the data for spacecrafts from cvs
+    '''Create an instance of each parcel with Class cargoList '''
+    # get the data for parcels from cvs
     spaceCraftCsv = readFile('../data/Spacecrafts.csv')
 
     # dict to store key value pair of name and class name.
@@ -55,8 +55,41 @@ def createObjectsSpaceCraft():
     # return dict to be able to find objects
     return spaceCraftId
 
-spaceCraftId = createObjectsSpaceCraft()
+# Class of cargo with parameters
+class cargoList(object):
+    # set default parameters
+    cargoId = str
+    weight = float
+    volume = float
 
+    # Used to create instance for itself if parameters are passed
+    def __init__(self, Parcel_ID, Weight, Volume):
+        self.cargoId = Parcel_ID
+        self.weight = Weight
+        self.volume = Volume
+
+def createObjectsCargoList():
+    '''Create an instance of each parcel with Class cargoList '''
+    # get the data for parcels from cvs
+
+    cargoListCsv = readFile('../data/CargoList1.csv')
+
+    # dict to store key value pair of name and class name.
+    # Neceresary to make for loop work with instances.
+    cargoListId = {}
+
+    for row in cargoListCsv:
+        # Convert each data entry to object of class cargoList
+        # and parse parameters from csv to object
+        cargoListId[str(row['parcel_ID'])] = cargoList(row['parcel_ID'],
+                                                         row['weight (kg)'],
+                                                         row["volume (m^3)"]
+                                                         )
+    # return dict to be able to find objects
+    return cargoListId
+
+spaceCraftId = createObjectsSpaceCraft()
+cargoListId = createObjectsCargoList()
 ### >> TESTCODE <<
 # NOTES: voor python 3 haakjes om print, willen we daar rekening mee houden?
 print (spaceCraftId['Dragon'])
@@ -64,8 +97,9 @@ print (spaceCraftId['Dragon'].nation)
 print (spaceCraftId['Cygnus'].organisation)
 print (spaceCraftId['Cygnus'].spacecraft)
 print ("===")
+print (cargoListId['CL1#1'].weight)
 # MAAR dit mag bijvoorbeeld niet in classes
 for craft in spaceCraftId.keys():
     # omdat ie nu gaat zoeken naar een instance van de class met de naam craft
     # ipv de variabele waar craft voor staat in de for loop
-    (spaceCraftId[craft].spacecraft)
+    print (spaceCraftId[craft].payload)
