@@ -1,5 +1,6 @@
 # Programmeer Theorie - Space Freighters
 
+![CoverImage](/cover.JPG?raw=true)
 
 ### De raketjes
 Marit Beerepoot - 10983430  
