@@ -1,4 +1,4 @@
-# Programmeer Theorie - Space Freighters
+# Programmeer Theorie - Space Freight
 
 ![CoverImage](/cover.JPG?raw=true)
 
