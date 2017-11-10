@@ -1,6 +1,7 @@
 import csv
 import os.path
 import random
+import itertools
 
 # open csv file with relative path
 def readFile(relativePath):
@@ -14,11 +15,13 @@ class spaceCraft(object):
     # set default parameters
     nation = str
     organisation = str
-    payloadMass = float
-    payload = float
+    maxPayloadMass = float
+    maxPayload = float
     mass = float
     baseCost = int
     fuelToWeight = float
+    currentPayloadMass = 0
+    currentPayload = 0
 
     # Used to create instance for itself if parameters are passed
     def __init__(self, Spacecraft, Nation, Organisation, PayloadMass,
@@ -26,17 +29,40 @@ class spaceCraft(object):
         self.spacecraft = Spacecraft
         self.nation = Nation
         self.organisation = Organisation
-        self.payloadMass = PayloadMass
-        self.payload = Payload
+        self.maxPayloadMass = PayloadMass
+        self.maxPayload = Payload
         self.mass = Mass
         self.baseCost = BaseCost
         self.fuelToWeight = fuelToWeight
+        self.currentPayloadMass = 0
+        self.currentPayload = 0
 
-    def AlterPayloadMass(self, alterPayloadMass):
-        self.payloadMass = self.payloadMass + alterPayloadMass
+    def reset(self):
+        ''' restore parameters from start
+        '''
+        self.currentPayloadMass = 0
+        self.currentPayload = 0
+
+    def addParcelToCraft(self, parcelMass, parcelPayload):
+        ''' Check if the parcel fits in the spacecraft.
+            If yes: add, if no: notify
+        '''
+        if self.currentPayloadMass + parcelMass < self.maxPayloadMass and self.currentPayload + parcelPayload < self.maxPayload:
+            # add parcel weigh and payload to spacecraft.
+            self.currentPayloadMass = self.currentPayloadMass + parcelMass
+            self.currentPayload = self.currentPayload + parcelPayload
+
+        elif self.currentPayloadMass + parcelMass > self.maxPayloadMass:
+            #print ("To Heavy")
+            return False
+
+        elif self.currentPayload + parcelPayload > self.maxPayload:
+            #print ("To Big")
+            return False
 
     def calculateFuel(self):
-        print self.mass + self.payloadMass * self.fuelToWeight / (1-self.fuelToWeight)
+        #(Mass + Payload-mass) x FtW / (1-FtW) = F
+        return self.mass + self.currentPayloadMass * self.fuelToWeight / (1-self.fuelToWeight)
 
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
@@ -89,8 +115,8 @@ def createObjectsCargoList():
         # Convert each data entry to object of class cargoList
         # and parse parameters from csv to object
         cargoListId[str(row['parcel_ID'])] = cargoList(row['parcel_ID'],
-                                                         row['weight (kg)'],
-                                                         row["volume (m^3)"]
+                                                         float(row['weight (kg)']),
+                                                         float(row["volume (m^3)"])
                                                          )
     # return dict to be able to find objects
     return cargoListId
@@ -105,12 +131,68 @@ print (spaceCraftId['Cygnus'].organisation)
 print (spaceCraftId['Cygnus'].spacecraft)
 print ("===")
 print (cargoListId['CL1#1'].weight)
+
 # MAAR dit mag bijvoorbeeld niet in classes
 for craft in spaceCraftId.keys():
-    # omdat ie nu gaat zoeken naar een instance van de class met de naam craft
-    # ipv de variabele waar craft voor staat in de for loop
-    print (spaceCraftId[craft].payload)
+    print (spaceCraftId['Cygnus'].maxPayload)
 
+print spaceCraftId['Cygnus'].calculateFuel()
+
+
+# little check to see the total parcel weight and volume
+print ('<<TOTAL LOAD>>')
+totalWeight = 0
+totalVolume = 0
+for parcel in cargoListId.keys():
+    totalWeight = totalWeight + cargoListId[parcel].weight
+    totalVolume = totalVolume + cargoListId[parcel].volume
+print (totalWeight)
+print (totalVolume)
+
+# <<ASSIGNMENT 1>>
+# create all permutations of cargolist
+combinations = itertools.permutations(cargoListId.keys(), len(cargoListId.keys()))
+
+# use counter to prematurely break loop to prevent a large amount of loops
+counter = 0
+for combi in combinations:
+    #print ('<<Info>>')
+    counter += 1
+    # keep track of the number of track in the spaceCraft
+    packetCount = 0
+    # reset parameters of spacecraft / clear loading hold of spacecraft
+    spaceCraftId['Progress'].reset()
+    spaceCraftId['Cygnus'].reset()
+    spaceCraftId['Kounotori'].reset()
+    spaceCraftId['Dragon'].reset()
+
+    # for every parcel in combination
+    for parcel in combi:
+        # if there is room: add
+        if spaceCraftId['Progress'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            spaceCraftId['Progress'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            packetCount += 1
+        elif spaceCraftId['Cygnus'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            spaceCraftId['Cygnus'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            packetCount += 1
+        elif spaceCraftId['Kounotori'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            spaceCraftId['Kounotori'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            packetCount += 1
+        elif spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            packetCount += 1
+
+    if packetCount > 50:
+        print packetCount
+        break
+    #print (spaceCraftId['Progress'].currentPayloadMass)
+    #print (spaceCraftId['Progress'].currentPayload)
+    #print (spaceCraftId['Progress'].maxPayloadMass)
+    #print (spaceCraftId['Progress'].maxPayload)
+    #if counter == 100000:
+    #    break
+
+"""
 Cygnus = 0
 CygnusVol = 0
 Progress = 0
@@ -121,14 +203,8 @@ Dragon = 0
 DragonVol = 0
 CygLoad = []
 
-randomList = random.sample(range(1,101), 100)
-
-print (spaceCraftId['Cygnus'].payloadMass)
-spaceCraftId['Cygnus'].AlterPayloadMass(-1000)
-print (spaceCraftId['Cygnus'].payloadMass)
-spaceCraftId['Cygnus'].calculateFuel()
-
-"""for i in randomList:
+#randomList = random.sample(range(1,101), 100)
+for i in randomList:
     parcel = 'CL1#' + str(i)
     print parcel
     print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
