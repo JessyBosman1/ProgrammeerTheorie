@@ -155,11 +155,21 @@ combinations = itertools.permutations(cargoListId.keys(), len(cargoListId.keys()
 
 # use counter to prematurely break loop to prevent a large amount of loops
 counter = 0
+# used to remember last iteration, to skip the loop if the fitting parcels would be the same
+lastIteration = []
+packetCount = 1
+
 for combi in combinations:
-    #print ('<<Info>>')
+    # if the new list has the same packets in front as fitted in the one before, skip iteration
+    # <! used for optimalisation >
+    if list(combi)[:packetCount] == lastIteration[:packetCount]:
+        continue
+    lastIteration = list(combi)
+
     counter += 1
-    # keep track of the number of track in the spaceCraft
+    # keep track of the number of parcels in the spaceCrafts
     packetCount = 0
+
     # reset parameters of spacecraft / clear loading hold of spacecraft
     spaceCraftId['Progress'].reset()
     spaceCraftId['Cygnus'].reset()
@@ -182,13 +192,17 @@ for combi in combinations:
             spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
             packetCount += 1
 
-    if packetCount > 50:
-        print packetCount
+    if packetCount > 90:
+        print ('<<Info>>')
+        print (list(combi)[:packetCount])
+        print (packetCount)
+        #print (spaceCraftId['Progress'].currentPayloadMass)
+        #print (spaceCraftId['Progress'].currentPayload)
+        #print (spaceCraftId['Progress'].maxPayloadMass)
+        #print (spaceCraftId['Progress'].maxPayload)
         break
-    #print (spaceCraftId['Progress'].currentPayloadMass)
-    #print (spaceCraftId['Progress'].currentPayload)
-    #print (spaceCraftId['Progress'].maxPayloadMass)
-    #print (spaceCraftId['Progress'].maxPayload)
+
+    ''' # Enable to make the loop stop prematurely''' 
     #if counter == 100000:
     #    break
 
