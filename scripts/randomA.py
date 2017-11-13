@@ -42,10 +42,10 @@ shuffleList = [x for x in shuffleGen]
 #print len(randomList)
 randomList = [x for x in range(1,101)]
 randomList.remove(83)
-randomList.remove(59)
+randomList.remove(58)
 randomList.remove(34)
 
-for loop in range(100000):
+for loop in range(1400000):
     if loop%10000 == 0:
         print loop
     # if the new list has the same packets in front as fitted in the one before, skip iteration
@@ -73,6 +73,10 @@ for loop in range(100000):
     spaceCraftId['Cygnus'].reset()
     spaceCraftId['Kounotori'].reset()
     spaceCraftId['Dragon'].reset()
+    space0 = []
+    space1 = []
+    space2 = []
+    space3 = []
 
 
     # for every parcel in the randomlist
@@ -82,21 +86,31 @@ for loop in range(100000):
             # if there is room: add
             if spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                space0.append(parcel)
                 packetCount += 1
             elif spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                space1.append(parcel)
                 packetCount += 1
             elif spaceCraftId[spacer[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                space2.append(parcel)
                 packetCount += 1
             elif spaceCraftId[spacer[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                space3.append(parcel)
                 packetCount += 1
 
-        if packetCount > 90:
+        if packetCount > 80:
             print ('<<Info>>')
-            print (list(combi)[:packetCount])
-            print (packetCount)
+            print spacer[0], space0
+            print '---------------'
+            print spacer[1], space1
+            print '---------------'
+            print spacer[2], space2
+            print '---------------'
+            print spacer[3], space3
+            print '---------------'
             #print (spaceCraftId['Progress'].currentPayloadMass)
             #print (spaceCraftId['Progress'].currentPayload)
             #print (spaceCraftId['Progress'].maxPayloadMass)
