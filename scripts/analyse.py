@@ -47,6 +47,9 @@ def shipNormalizer():
 	# Vectorized descending ranking of ships, based on a combined variable between Weight and Volume
 	ranking = sorted(vectorizedShips,key=vectorizedShips.get,reverse=True)
 	return ranking
-print parcelNormalizer()
-print
-print shipNormalizer()
+cargoListId = main.createObjectsCargoList()
+# Creating the necessary lists obtained from the object
+nameList = [parcel for parcel in cargoListId]
+for x in nameList:
+	if x not in parcelNormalizer():
+		print cargoListId[x].weight
