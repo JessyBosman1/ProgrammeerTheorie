@@ -45,7 +45,7 @@ randomList.remove(83)
 randomList.remove(58)
 randomList.remove(34)
 
-for loop in range(10):
+for loop in range(1000000):
     if loop%10000 == 0:
         print loop
     # if the new list has the same packets in front as fitted in the one before, skip iteration
@@ -53,7 +53,6 @@ for loop in range(10):
     #if list(combi)[:packetCount] == lastIteration[:packetCount]:
     #    continue
     #lastIteration = list(combi)
-    print '----------------------------------------------'
     # Check if the randomList was generated before
     random.shuffle(randomList)
     #print randomList
@@ -119,7 +118,7 @@ for loop in range(10):
             #print (spaceCraftId['Progress'].maxPayloadMass)
             #print (spaceCraftId['Progress'].maxPayload)
             break
-        print packetCount
+        #print packetCount
     #print packetCount
     if packetCount > memoryCount:
         memoryCount = packetCount
