@@ -45,7 +45,7 @@ randomList.remove(83)
 randomList.remove(58)
 randomList.remove(34)
 
-for loop in range(1400000):
+for loop in range(10):
     if loop%10000 == 0:
         print loop
     # if the new list has the same packets in front as fitted in the one before, skip iteration
@@ -53,7 +53,7 @@ for loop in range(1400000):
     #if list(combi)[:packetCount] == lastIteration[:packetCount]:
     #    continue
     #lastIteration = list(combi)
-
+    print '----------------------------------------------'
     # Check if the randomList was generated before
     random.shuffle(randomList)
     #print randomList
@@ -69,20 +69,23 @@ for loop in range(1400000):
     packetCount = 0
 
     # reset parameters of spacecraft / clear loading hold of spacecraft
-    spaceCraftId['Progress'].reset()
-    spaceCraftId['Cygnus'].reset()
-    spaceCraftId['Kounotori'].reset()
-    spaceCraftId['Dragon'].reset()
+
     space0 = []
     space1 = []
     space2 = []
     space3 = []
 
-
+    temp = []
     # for every parcel in the randomlist
     for spacer in shuffleList:
+        spaceCraftId['Progress'].reset()
+        spaceCraftId['Cygnus'].reset()
+        spaceCraftId['Kounotori'].reset()
+        spaceCraftId['Dragon'].reset()
+        packetCount = 0
         for i in randomList:
             parcel = 'CL1#' + str(i)
+            temp.append(parcel)
             # if there is room: add
             if spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
@@ -116,7 +119,7 @@ for loop in range(1400000):
             #print (spaceCraftId['Progress'].maxPayloadMass)
             #print (spaceCraftId['Progress'].maxPayload)
             break
-
+        print packetCount
     #print packetCount
     if packetCount > memoryCount:
         memoryCount = packetCount
