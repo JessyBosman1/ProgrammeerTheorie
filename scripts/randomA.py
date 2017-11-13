@@ -3,6 +3,7 @@ import os.path
 import random
 import itertools
 import main
+from random import shuffle
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
 
@@ -33,7 +34,18 @@ memory = []
 packetCount = 0
 memoryCount = 0
 
-for loop in range(1000000):
+spaceList = ['Progress', 'Cygnus', 'Kounotori', 'Dragon']
+shuffleGen = itertools.permutations(spaceList, len(spaceList))
+shuffleList = [x for x in shuffleGen]
+
+#randomList = random.sample(range(1,101), 100)
+#print len(randomList)
+randomList = [x for x in range(1,101)]
+randomList.remove(83)
+randomList.remove(59)
+randomList.remove(34)
+
+for loop in range(100000):
     if loop%10000 == 0:
         print loop
     # if the new list has the same packets in front as fitted in the one before, skip iteration
@@ -43,15 +55,15 @@ for loop in range(1000000):
     #lastIteration = list(combi)
 
     # Check if the randomList was generated before
-    randomList = random.sample(range(1,101), 100)
-    if randomList in memory:
-        print ('double')
-        continue
-    else:
-        memory.append(randomList)
+    random.shuffle(randomList)
+    #print randomList
+    #print len(randomList)
 
-
-
+    #if randomList in memory:
+    #    print ('double')
+    #    continue
+    #else:
+    #    memory.append(randomList)
 
     # keep track of the number of parcels in the spaceCrafts
     packetCount = 0
@@ -62,34 +74,36 @@ for loop in range(1000000):
     spaceCraftId['Kounotori'].reset()
     spaceCraftId['Dragon'].reset()
 
-    # for every parcel in combination
-    randomList = random.sample(range(1,101), 100)
-    for i in randomList:
-        parcel = 'CL1#' + str(i)
-        # if there is room: add
-        if spaceCraftId['Progress'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId['Progress'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            packetCount += 1
-        elif spaceCraftId['Cygnus'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId['Cygnus'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            packetCount += 1
-        elif spaceCraftId['Kounotori'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId['Kounotori'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            packetCount += 1
-        elif spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            packetCount += 1
 
-    if packetCount > 90:
-        print ('<<Info>>')
-        print (list(combi)[:packetCount])
-        print (packetCount)
-        #print (spaceCraftId['Progress'].currentPayloadMass)
-        #print (spaceCraftId['Progress'].currentPayload)
-        #print (spaceCraftId['Progress'].maxPayloadMass)
-        #print (spaceCraftId['Progress'].maxPayload)
-        break
+    # for every parcel in the randomlist
+    for spacer in shuffleList:
+        for i in randomList:
+            parcel = 'CL1#' + str(i)
+            # if there is room: add
+            if spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                packetCount += 1
+            elif spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                packetCount += 1
+            elif spaceCraftId[spacer[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                spaceCraftId[spacer[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                packetCount += 1
+            elif spaceCraftId[spacer[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                spaceCraftId[spacer[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                packetCount += 1
 
+        if packetCount > 90:
+            print ('<<Info>>')
+            print (list(combi)[:packetCount])
+            print (packetCount)
+            #print (spaceCraftId['Progress'].currentPayloadMass)
+            #print (spaceCraftId['Progress'].currentPayload)
+            #print (spaceCraftId['Progress'].maxPayloadMass)
+            #print (spaceCraftId['Progress'].maxPayload)
+            break
+
+    #print packetCount
     if packetCount > memoryCount:
         memoryCount = packetCount
         print memoryCount
