@@ -9,17 +9,21 @@ cargoListId = main.createObjectsCargoList()
 spaceCraftRank = analyse.shipNormalizer()
 parcelRank = analyse.parcelNormalizer()
 final={}
-trying=[spaceCraftRank[1]]
-
-for ship in trying:
-	mxml=0
+RemoveParcels=[]
+for ship in spaceCraftRank:
+	lowestMass=0
 	amount = 0
 	results={}
 	winner=[]
-	while(amount<100000):
+	while(amount<25000):
 		options=True
 		strikes=0
-		parcelRank = analyse.parcelNormalizer()
+		if len(RemoveParcels)==0:
+			parcelRank = analyse.parcelNormalizer()
+		else:
+			parcelRank = analyse.parcelNormalizer()
+			for x in RemoveParcels:
+				parcelRank.remove(x)
 		spaceCraftId[ship].reset()
 		usedPackets=[]
 		while(options):
@@ -33,13 +37,29 @@ for ship in trying:
 					usedPackets.append(parcel)
 				else:
 					strikes+=1
-		results[amount]=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,2), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,2)]
-		if mxml<len(usedPackets):
-			mxml=len(usedPackets)
-			winner=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,2), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,2)]
+		results[amount]=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
+		if lowestMass<results[amount][1]:
+			lowestMass=results[amount][1]
+			winner=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
+			parcelsToRemove=[]
+			for par in usedPackets:
+				parcelsToRemove.append(par)
 		amount+=1
-	final[ship]=results
-print winner
+	final[ship]=winner
+	for x in parcelsToRemove:
+		RemoveParcels.append(x)
+	parcelsToRemove=[]
+total=0
+for x in final:
+	print x, final[x]
+	total+=final[x][1]
+print total	
+
+
+
+
+
+
 
 def firstTry():
 	spaceCraftId = main.createObjectsSpaceCraft()
