@@ -8,9 +8,12 @@ spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
 spaceCraftRank = analyse.shipNormalizer()
 parcelRank = analyse.parcelNormalizer()
+parcelRank.remove("CL1#58")
+parcelRank.remove("CL1#34")
+parcelRank.remove("CL1#83")
 final={}
 RemoveParcels=[]
-for ship in spaceCraftRank:
+for ship in reversed(spaceCraftRank):
 	lowestMass=0
 	amount = 0
 	results={}
@@ -32,14 +35,14 @@ for ship in spaceCraftRank:
 			else:
 				parcel=random.choice(parcelRank)
 				parcelRank.remove(parcel)
-				if spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+				if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
 					spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 					usedPackets.append(parcel)
 				else:
 					strikes+=1
 		results[amount]=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
-		if lowestMass<results[amount][1]:
-			lowestMass=results[amount][1]
+		if lowestMass<results[amount][3]:
+			lowestMass=results[amount][3]
 			winner=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
 			parcelsToRemove=[]
 			for par in usedPackets:

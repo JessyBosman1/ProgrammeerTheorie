@@ -43,14 +43,12 @@ class spaceCraft(object):
         self.currentPayloadMass = 0
         self.currentPayload = 0
 
-    def addParcelToCraft(self, parcelMass, parcelPayload):
+    def checkFitCraft(self, parcelMass, parcelPayload):
         ''' Check if the parcel fits in the spacecraft.
             If yes: add, if no: notify
         '''
         if self.currentPayloadMass + parcelMass < self.maxPayloadMass and self.currentPayload + parcelPayload < self.maxPayload:
-            # add parcel weigh and payload to spacecraft.
-            self.currentPayloadMass = self.currentPayloadMass + parcelMass
-            self.currentPayload = self.currentPayload + parcelPayload
+            return True
 
         elif self.currentPayloadMass + parcelMass > self.maxPayloadMass:
             #print ("To Heavy")
@@ -59,6 +57,11 @@ class spaceCraft(object):
         elif self.currentPayload + parcelPayload > self.maxPayload:
             #print ("To Big")
             return False
+
+    def addParcelToCraft(self, parcelMass, parcelPayload):
+            # add parcel weigh and payload to spacecraft.
+            self.currentPayloadMass = self.currentPayloadMass + parcelMass
+            self.currentPayload = self.currentPayload + parcelPayload
 
     def calculateFuel(self):
         #(Mass + Payload-mass) x FtW / (1-FtW) = F

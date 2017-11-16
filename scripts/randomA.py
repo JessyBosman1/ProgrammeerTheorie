@@ -86,19 +86,19 @@ for loop in range(1000000):
             parcel = 'CL1#' + str(i)
             temp.append(parcel)
             # if there is room: add
-            if spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            if spaceCraftId[spacer[0]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 space0.append(parcel)
                 packetCount += 1
-            elif spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            elif spaceCraftId[spacer[1]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 space1.append(parcel)
                 packetCount += 1
-            elif spaceCraftId[spacer[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            elif spaceCraftId[spacer[2]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 space2.append(parcel)
                 packetCount += 1
-            elif spaceCraftId[spacer[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+            elif spaceCraftId[spacer[3]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                 spaceCraftId[spacer[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 space3.append(parcel)
                 packetCount += 1
@@ -117,7 +117,6 @@ for loop in range(1000000):
             #print (spaceCraftId['Progress'].currentPayload)
             #print (spaceCraftId['Progress'].maxPayloadMass)
             #print (spaceCraftId['Progress'].maxPayload)
-            break
         #print packetCount
     #print packetCount
     if packetCount > memoryCount:

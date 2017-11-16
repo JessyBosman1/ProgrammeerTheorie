@@ -23,7 +23,7 @@ def parcelNormalizer():
 		vector = ((weightList[i]) + (volumeList[i]))/2
 		vectorizedParcels[nameList[i]] = vector
 	# Vectorized descending ranking of parcels, based on a combined variable between Weight and Volume
-	ranking = sorted(vectorizedParcels,key=vectorizedParcels.get,reverse=True)[:97]
+	ranking = sorted(vectorizedParcels,key=vectorizedParcels.get,reverse=True)
 	return ranking
 
 def shipNormalizer():
