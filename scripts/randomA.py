@@ -69,10 +69,7 @@ for loop in range(1000000):
 
     # reset parameters of spacecraft / clear loading hold of spacecraft
 
-    space0 = []
-    space1 = []
-    space2 = []
-    space3 = []
+
 
     temp = []
     # for every parcel in the randomlist
@@ -82,6 +79,11 @@ for loop in range(1000000):
         spaceCraftId['Kounotori'].reset()
         spaceCraftId['Dragon'].reset()
         packetCount = 0
+
+        space0 = []
+        space1 = []
+        space2 = []
+        space3 = []
         for i in randomList:
             parcel = 'CL1#' + str(i)
             temp.append(parcel)
@@ -103,7 +105,7 @@ for loop in range(1000000):
                 space3.append(parcel)
                 packetCount += 1
 
-        if packetCount > 80:
+        if packetCount > 76:
             print ('<<Info>>')
             print spacer[0], space0
             print '---------------'
@@ -113,6 +115,7 @@ for loop in range(1000000):
             print '---------------'
             print spacer[3], space3
             print '---------------'
+            print len(space0), len(space1), len(space2), len(space3)
             #print (spaceCraftId['Progress'].currentPayloadMass)
             #print (spaceCraftId['Progress'].currentPayload)
             #print (spaceCraftId['Progress'].maxPayloadMass)
