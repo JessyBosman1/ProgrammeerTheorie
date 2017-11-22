@@ -2,7 +2,6 @@ import csv
 import os.path
 import random
 import itertools
-
 # open csv file with relative path
 def readFile(relativePath):
     ''' Read csv file and return generator of information'''
@@ -18,7 +17,7 @@ class spaceCraft(object):
     maxPayloadMass = float
     maxPayload = float
     mass = float
-    baseCost = int
+    baseCost = float
     fuelToWeight = float
     currentPayloadMass = 0
     currentPayload = 0
@@ -69,6 +68,9 @@ class spaceCraft(object):
             standardFuel = self.fuelToWeight
         return round(self.mass + self.currentPayloadMass * self.fuelToWeight / (1-standardFuel), 2)
 
+    def calculateCost(self,fuel):
+        return self.baseCost + int(fuel*1000) * 5 
+
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
     # get the data for parcels from cvs
@@ -87,7 +89,7 @@ def createObjectsSpaceCraft():
                                                          float(row['PayloadMass (kgs)']),
                                                          float(row['Payload (m3)']),
                                                          float(row['Mass (kgs)']),
-                                                         row['BaseCost'],
+                                                         float(row['BaseCost']),
                                                          float(row['Fuel-to-Weight'])
                                                          )
     # return dict to be able to find objects

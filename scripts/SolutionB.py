@@ -115,7 +115,7 @@ for spacelist in shuffleList:
 			chosen.remove(parcel)
 			volumeList.remove(parcel)
 			weightList.remove(parcel)
-		price += spaceCraftId[ship].calculateFuel(0.73)
+		price += spaceCraftId[ship].calculateCost(spaceCraftId[ship].calculateFuel(0.73))
 		#collects the attempts
 		attempt[spacelist][ship] = [cargo,price]
 		total += len(cargo)
