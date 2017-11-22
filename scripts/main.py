@@ -63,9 +63,11 @@ class spaceCraft(object):
             self.currentPayloadMass = self.currentPayloadMass + parcelMass
             self.currentPayload = self.currentPayload + parcelPayload
 
-    def calculateFuel(self):
+    def calculateFuel(self, standardFuel=0):
         #(Mass + Payload-mass) x FtW / (1-FtW) = F
-        return self.mass + self.currentPayloadMass * self.fuelToWeight / (1-self.fuelToWeight)
+        if standardFuel == 0:
+            standardFuel = self.fuelToWeight
+        return round(self.mass + self.currentPayloadMass * self.fuelToWeight / (1-standardFuel), 2)
 
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
