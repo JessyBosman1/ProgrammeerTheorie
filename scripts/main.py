@@ -69,8 +69,8 @@ class spaceCraft(object):
             standardFuel = self.fuelToWeight
         return round(self.mass + self.currentPayloadMass * self.fuelToWeight / (1-standardFuel), 2)
 
-    def calculateCost(self,fuel):
-        return self.baseCost + int(fuel*1000) * 5 
+    def calculateCost(self, fuel):
+        return self.baseCost + int(fuel*1000) * 5
 
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
@@ -139,5 +139,3 @@ print (spaceCraftId['Cygnus'].organisation)
 print (spaceCraftId['Cygnus'].spacecraft)
 print ("===")
 print (cargoListId['CL1#1'].weight)
-
-    
