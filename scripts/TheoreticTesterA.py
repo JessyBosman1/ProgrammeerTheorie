@@ -1,5 +1,5 @@
 import main
-import analyse
+import analyseA
 import random
 
 
@@ -90,13 +90,13 @@ for ship in nameList:
 		chosen.remove(parcel)
 		volumeList.remove(parcel)
 		weightList.remove(parcel)
-	print ship, len(cargo)
-	print cargo
+	print (ship, len(cargo))
+	print (cargo)
 	print ("Payload (current, max)", spaceCraftId[ship].currentPayload, spaceCraftId[ship].maxPayload, str(round(spaceCraftId[ship].currentPayload/spaceCraftId[ship].maxPayload*100,2))+"%")
 	print ("PayloadMass (current, max)", spaceCraftId[ship].currentPayloadMass, spaceCraftId[ship].maxPayloadMass, str(round(spaceCraftId[ship].currentPayloadMass/spaceCraftId[ship].maxPayloadMass*100,2))+"%")
-	print '---------------'
+	print ('---------------')
 	total+=len(cargo)
-print total
+print(total)
 
 
 

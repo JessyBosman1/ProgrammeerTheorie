@@ -3,11 +3,11 @@ import os.path
 import random
 import itertools
 import main
-import analyse
+import analyseA
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
-spaceCraftRank = analyse.shipNormalizer()
-parcelRank = analyse.parcelNormalizer()
+spaceCraftRank = analyseA.shipNormalizer()
+parcelRank = analyseA.parcelNormalizer()
 parcelRank.remove("CL1#58")
 parcelRank.remove("CL1#34")
 parcelRank.remove("CL1#83")
@@ -22,9 +22,9 @@ for ship in reversed(spaceCraftRank):
 		options=True
 		strikes=0
 		if len(RemoveParcels)==0:
-			parcelRank = analyse.parcelNormalizer()
+			parcelRank = analyseA.parcelNormalizer()
 		else:
-			parcelRank = analyse.parcelNormalizer()
+			parcelRank = analyseA.parcelNormalizer()
 			for x in RemoveParcels:
 				parcelRank.remove(x)
 		spaceCraftId[ship].reset()
@@ -54,9 +54,9 @@ for ship in reversed(spaceCraftRank):
 	parcelsToRemove=[]
 total=0
 for x in final:
-	print x, final[x]
+	print (x, final[x])
 	total+=final[x][1]
-print total	
+print(total)	
 
 
 
@@ -67,8 +67,8 @@ print total
 def firstTry():
 	spaceCraftId = main.createObjectsSpaceCraft()
 	cargoListId = main.createObjectsCargoList()
-	spaceCraftRank = analyse.shipNormalizer()
-	parcelRank = analyse.parcelNormalizer()
+	spaceCraftRank = analyseA.shipNormalizer()
+	parcelRank = analyseA.parcelNormalizer()
 	parcelsCompleted = []
 	for ship in reversed(spaceCraftRank):
 		amountOfParcels = 0
@@ -92,8 +92,8 @@ def firstTry():
 						else:
 							optionsLeft = False
 
-		print ship
-		print "Parcels in this ship:", amountOfParcels
-		print "Room left: ",spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload, " m^3 and ",spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass," kg"
-		print parcelsCompleted, len(parcelsCompleted)
+		print (ship)
+		print ("Parcels in this ship:", amountOfParcels)
+		print ("Room left: ",spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload, " m^3 and ",spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass," kg")
+		print (parcelsCompleted, len(parcelsCompleted))
 

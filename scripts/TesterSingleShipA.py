@@ -3,11 +3,12 @@ import os.path
 import random
 import itertools
 import main
-import analyse
+import analyseA
+
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
 spaceCraftRank = ["Cygnus"]
-parcelRank = analyse.parcelNormalizer()
+parcelRank = analyseA.parcelNormalizer()
 final={}
 RemoveParcels=[]
 for ship in reversed(spaceCraftRank):
@@ -17,13 +18,13 @@ for ship in reversed(spaceCraftRank):
 	winner=[]
 	while(amount<250000):
 		if amount%50000==0:
-			print amount
+			print (amount)
 		options=True
 		strikes=0
 		if len(RemoveParcels)==0:
-			parcelRank = analyse.parcelNormalizer()
+			parcelRank = analyseA.parcelNormalizer()
 		else:
-			parcelRank = analyse.parcelNormalizer()
+			parcelRank = analyseA.parcelNormalizer()
 			for x in RemoveParcels:
 				parcelRank.remove(x)
 		spaceCraftId[ship].reset()
@@ -45,7 +46,7 @@ for ship in reversed(spaceCraftRank):
 			lowestMass=results[amount][1]
 			winner=[usedPackets,len(usedPackets),round(spaceCraftId[ship].currentPayload/spaceCraftId[ship].maxPayload*100,4), round(spaceCraftId[ship].currentPayloadMass/spaceCraftId[ship].maxPayloadMass*100,4)]
 			parcelsToRemove=[]
-			print lowestMass, winner[2], winner[3], winner[0]
+			print (lowestMass, winner[2], winner[3], winner[0])
 			for par in usedPackets:
 				parcelsToRemove.append(par)
 		amount+=1
@@ -55,9 +56,9 @@ for ship in reversed(spaceCraftRank):
 	parcelsToRemove=[]
 total=0
 for x in final:
-	print x, final[x]
+	print (x, final[x])
 	total+=final[x][1]
-print total	
+print (total)
 
 
 
@@ -68,8 +69,8 @@ print total
 def firstTry():
 	spaceCraftId = main.createObjectsSpaceCraft()
 	cargoListId = main.createObjectsCargoList()
-	spaceCraftRank = analyse.shipNormalizer()
-	parcelRank = analyse.parcelNormalizer()
+	spaceCraftRank = analyseA.shipNormalizer()
+	parcelRank = analyseA.parcelNormalizer()
 	parcelsCompleted = []
 	for ship in reversed(spaceCraftRank):
 		amountOfParcels = 0
@@ -93,8 +94,8 @@ def firstTry():
 						else:
 							optionsLeft = False
 
-		print ship
-		print "Parcels in this ship:", amountOfParcels
-		print "Room left: ",spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload, " m^3 and ",spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass," kg"
-		print parcelsCompleted, len(parcelsCompleted)
+		print (ship)
+		print ("Parcels in this ship:", amountOfParcels)
+		print ("Room left: ",spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload, " m^3 and ",spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass," kg")
+		print (parcelsCompleted, len(parcelsCompleted))
 

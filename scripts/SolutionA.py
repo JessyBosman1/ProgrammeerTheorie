@@ -1,5 +1,5 @@
 import main
-import analyse
+import analyseA
 import random
 import itertools
 
@@ -121,16 +121,16 @@ for spacelist in shuffleList:
 	if total>=maxScore:
 		maxScore=total
 		for y in spacelist:
-			print y, attempt[spacelist][y]
+			print (y, attempt[spacelist][y])
 			print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload, str(round(spaceCraftId[y].currentPayload/spaceCraftId[y].maxPayload*100,2))+"%")
 			print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, str(round(spaceCraftId[y].currentPayloadMass/spaceCraftId[y].maxPayloadMass*100,2))+"%")
-			print len(attempt[spacelist][y])
-			print '---------------'
+			print (len(attempt[spacelist][y]))
+			print ('---------------')
 
-		print total
-		print '---------------'
+		print (total)
+		print ('---------------')
 
-print maxScore
+print (maxScore)
 
 
 
