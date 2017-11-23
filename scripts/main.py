@@ -9,6 +9,7 @@ def readFile(relativePath):
         reader = csv.DictReader(csvfile)
         # Return information (as list to remove generator and not able to call)
         return list(reader)
+
 # Class of spacecraft with parameters
 class spaceCraft(object):
     # set default parameters
@@ -130,8 +131,8 @@ def createObjectsCargoList():
 
 spaceCraftId = createObjectsSpaceCraft()
 cargoListId = createObjectsCargoList()
+
 ### >> TESTCODE <<
-# NOTES: voor python 3 haakjes om print, willen we daar rekening mee houden?
 print (spaceCraftId['Dragon'])
 print (spaceCraftId['Dragon'].nation)
 print (spaceCraftId['Cygnus'].organisation)
@@ -139,5 +140,4 @@ print (spaceCraftId['Cygnus'].spacecraft)
 print ("===")
 print (cargoListId['CL1#1'].weight)
 
-# MAAR dit mag bijvoorbeeld niet in classes
     
