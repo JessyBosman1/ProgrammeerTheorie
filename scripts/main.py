@@ -2,7 +2,6 @@ import csv
 import os.path
 import random
 import itertools
-
 # open csv file with relative path
 def readFile(relativePath):
     ''' Read csv file and return generator of information'''
@@ -10,6 +9,7 @@ def readFile(relativePath):
         reader = csv.DictReader(csvfile)
         # Return information (as list to remove generator and not able to call)
         return list(reader)
+
 # Class of spacecraft with parameters
 class spaceCraft(object):
     # set default parameters
@@ -18,7 +18,7 @@ class spaceCraft(object):
     maxPayloadMass = float
     maxPayload = float
     mass = float
-    baseCost = int
+    baseCost = float
     fuelToWeight = float
     currentPayloadMass = 0
     currentPayload = 0
@@ -63,9 +63,14 @@ class spaceCraft(object):
             self.currentPayloadMass = self.currentPayloadMass + parcelMass
             self.currentPayload = self.currentPayload + parcelPayload
 
-    def calculateFuel(self):
+    def calculateFuel(self, standardFuel=0):
         #(Mass + Payload-mass) x FtW / (1-FtW) = F
-        return self.mass + self.currentPayloadMass * self.fuelToWeight / (1-self.fuelToWeight)
+        if standardFuel == 0:
+            standardFuel = self.fuelToWeight
+        return round(self.mass + self.currentPayloadMass * self.fuelToWeight / (1-standardFuel), 2)
+
+    def calculateCost(self,fuel):
+        return self.baseCost + int(fuel*1000) * 5 
 
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
@@ -85,7 +90,7 @@ def createObjectsSpaceCraft():
                                                          float(row['PayloadMass (kgs)']),
                                                          float(row['Payload (m3)']),
                                                          float(row['Mass (kgs)']),
-                                                         row['BaseCost'],
+                                                         float(row['BaseCost']),
                                                          float(row['Fuel-to-Weight'])
                                                          )
     # return dict to be able to find objects
@@ -126,8 +131,8 @@ def createObjectsCargoList():
 
 spaceCraftId = createObjectsSpaceCraft()
 cargoListId = createObjectsCargoList()
+
 ### >> TESTCODE <<
-# NOTES: voor python 3 haakjes om print, willen we daar rekening mee houden?
 print (spaceCraftId['Dragon'])
 print (spaceCraftId['Dragon'].nation)
 print (spaceCraftId['Cygnus'].organisation)
@@ -135,4 +140,3 @@ print (spaceCraftId['Cygnus'].spacecraft)
 print ("===")
 print (cargoListId['CL1#1'].weight)
 
-# MAAR dit mag bijvoorbeeld niet in classes

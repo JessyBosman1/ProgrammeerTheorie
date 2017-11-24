@@ -47,7 +47,7 @@ randomList.remove(34)
 
 for loop in range(1000000):
     if loop%10000 == 0:
-        print loop
+        print(loop)
     # if the new list has the same packets in front as fitted in the one before, skip iteration
     # <! used for optimalisation >
     #if list(combi)[:packetCount] == lastIteration[:packetCount]:
@@ -110,20 +110,20 @@ for loop in range(1000000):
             print (spacer[0], space0)
             print ("Payload (current, max)", spaceCraftId[spacer[0]].currentPayload, spaceCraftId[spacer[0]].maxPayload)
             print ("PayloadMass (current, max)", spaceCraftId[spacer[0]].currentPayloadMass, spaceCraftId[spacer[0]].maxPayloadMass)
-            print '---------------'
+            print ('---------------')
             print (spacer[1], space1)
             print ("Payload (current, max)", spaceCraftId[spacer[1]].currentPayload, spaceCraftId[spacer[1]].maxPayload)
             print ("PayloadMass (current, max)", spaceCraftId[spacer[1]].currentPayloadMass, spaceCraftId[spacer[1]].maxPayloadMass)
-            print '---------------'
+            print ('---------------')
             print (spacer[2], space2)
             print ("Payload (current, max)", spaceCraftId[spacer[2]].currentPayload, spaceCraftId[spacer[2]].maxPayload)
             print ("PayloadMass (current, max)", spaceCraftId[spacer[2]].currentPayloadMass, spaceCraftId[spacer[2]].maxPayloadMass)
-            print '---------------'
+            print ('---------------')
             print (spacer[3], space3)
             print ("Payload (current, max)", spaceCraftId[spacer[3]].currentPayload, spaceCraftId[spacer[3]].maxPayload)
             print ("PayloadMass (current, max)", spaceCraftId[spacer[3]].currentPayloadMass, spaceCraftId[spacer[3]].maxPayloadMass)
-            print '---------------'
-            print spacer[0], len(space0), spacer[1], len(space1), spacer[2], len(space2), spacer[3], len(space3), "\n"
+            print ('---------------')
+            print (spacer[0], len(space0), spacer[1], len(space1), spacer[2], len(space2), spacer[3], len(space3), "\n")
             #print (spaceCraftId['Progress'].currentPayloadMass)
             #print (spaceCraftId['Progress'].currentPayload)
             #print (spaceCraftId['Progress'].maxPayloadMass)
@@ -132,7 +132,7 @@ for loop in range(1000000):
     #print packetCount
     if packetCount > memoryCount:
         memoryCount = packetCount
-        print memoryCount
+        print(memoryCount)
 
     ''' # Enable to make the loop stop prematurely''' 
     #if counter == 100000:

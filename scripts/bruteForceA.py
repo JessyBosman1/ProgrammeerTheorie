@@ -9,7 +9,7 @@ cargoListId = main.createObjectsCargoList()
 for craft in spaceCraftId.keys():
     print (spaceCraftId['Cygnus'].maxPayload)
 
-print spaceCraftId['Cygnus'].calculateFuel()
+print(spaceCraftId['Cygnus'].calculateFuel())
 
 
 # little check to see the total parcel weight and volume

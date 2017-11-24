@@ -4,13 +4,11 @@ import random
 import itertools
 import main
 import analyseA
+
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
-spaceCraftRank = analyseA.shipNormalizer()
+spaceCraftRank = ["Cygnus"]
 parcelRank = analyseA.parcelNormalizer()
-parcelRank.remove("CL1#58")
-parcelRank.remove("CL1#34")
-parcelRank.remove("CL1#83")
 final={}
 RemoveParcels=[]
 for ship in reversed(spaceCraftRank):
@@ -18,7 +16,9 @@ for ship in reversed(spaceCraftRank):
 	amount = 0
 	results={}
 	winner=[]
-	while(amount<25000):
+	while(amount<250000):
+		if amount%50000==0:
+			print (amount)
 		options=True
 		strikes=0
 		if len(RemoveParcels)==0:
@@ -30,21 +30,23 @@ for ship in reversed(spaceCraftRank):
 		spaceCraftId[ship].reset()
 		usedPackets=[]
 		while(options):
-			if strikes==10:
+			if strikes==100:
 				options=False
 			else:
 				parcel=random.choice(parcelRank)
-				parcelRank.remove(parcel)
 				if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
 					spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 					usedPackets.append(parcel)
+					parcelRank.remove(parcel)
+
 				else:
 					strikes+=1
-		results[amount]=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
-		if lowestMass<results[amount][3]:
-			lowestMass=results[amount][3]
-			winner=[usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
+		results[amount]=[usedPackets,len(usedPackets),round(spaceCraftId[ship].currentPayload/spaceCraftId[ship].maxPayload*100,4), round(spaceCraftId[ship].currentPayloadMass/spaceCraftId[ship].maxPayloadMass*100,4)]
+		if lowestMass<results[amount][1]:
+			lowestMass=results[amount][1]
+			winner=[usedPackets,len(usedPackets),round(spaceCraftId[ship].currentPayload/spaceCraftId[ship].maxPayload*100,4), round(spaceCraftId[ship].currentPayloadMass/spaceCraftId[ship].maxPayloadMass*100,4)]
 			parcelsToRemove=[]
+			print (lowestMass, winner[2], winner[3], winner[0])
 			for par in usedPackets:
 				parcelsToRemove.append(par)
 		amount+=1
@@ -56,7 +58,7 @@ total=0
 for x in final:
 	print (x, final[x])
 	total+=final[x][1]
-print(total)	
+print (total)
 
 
 

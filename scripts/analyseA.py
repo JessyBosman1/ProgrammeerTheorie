@@ -52,4 +52,4 @@ cargoListId = main.createObjectsCargoList()
 nameList = [parcel for parcel in cargoListId]
 for x in nameList:
 	if x not in parcelNormalizer():
-		print cargoListId[x].weight
+		print(cargoListId[x].weight)
