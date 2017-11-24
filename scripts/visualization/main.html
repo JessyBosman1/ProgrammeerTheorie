@@ -1,0 +1,186 @@
+<html>
+<header>
+  <style>
+.card-img-top{
+  width: 100px;
+  height: 100px;
+}
+.card{
+  margin: 3%;
+
+}
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+</header>
+
+<body>
+<div class="card-group">
+  <div class="card">
+
+    <div class="card-body" style= "background-color:rgba(255, 99, 132, 0.1);">
+      <h4 class="card-title">Cygnus</h4>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Nation: USA</li>
+        <li class="list-group-item">Organisation: Nasa</li>
+        <li class="list-group-item">Payload mass: 2000 kg</li>
+        <li class="list-group-item">Payload:  18.9 m^3</li>
+        <li class="list-group-item">Mass: 7400 kg</li>
+        <li class="list-group-item">Base Cost: $390M</li>
+        <li class="list-group-item">Fuel-to-Weight: 0.73</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="card-body" style= "background-color:rgba(54, 162, 235, 0.1);">
+      <h4 class="card-title">Progress</h4>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Nation: Russia</li>
+        <li class="list-group-item">Organisation: Russian Federal Space Agency	</li>
+        <li class="list-group-item">Payload mass: 2400 kg</li>
+        <li class="list-group-item">Payload:  7.6 m^3</li>
+        <li class="list-group-item">Mass: 7020 kg</li>
+        <li class="list-group-item">Base Cost: $175M</li>
+        <li class="list-group-item">Fuel-to-Weight: 0.74</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="card-body" style= "background-color:rgba(255, 206, 86, 0.1);">
+      <h4 class="card-title">Kounotori</h4>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Nation: Japan</li>
+        <li class="list-group-item">Organisation: Japan Aerospace Exploration Agency</li>
+        <li class="list-group-item">Payload mass: 5200 kg</li>
+        <li class="list-group-item">Payload: 14 m^3</li>
+        <li class="list-group-item">Mass: 10500 kg</li>
+        <li class="list-group-item">Base Cost: $420M</li>
+        <li class="list-group-item">Fuel-to-Weight: 0.71</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="card-body" style= "background-color:rgba(75, 192, 192, 0.1);">
+      <h4 class="card-title">Dragon</h4>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Nation: USA</li>
+        <li class="list-group-item">Organisation: SpaceX</li>
+        <li class="list-group-item">Payload mass: 6000 kg</li>
+        <li class="list-group-item">Payload:  10 m^3</li>
+        <li class="list-group-item">Mass: 12200 kg</li>
+        <li class="list-group-item">Base Cost: $347M</li>
+        <li class="list-group-item">Fuel-to-Weight: 0.72</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row" style= "width:100%; height:500px; margin-top:30px;">
+  <div class="col-2">
+
+  </div>
+  <div class="col-4">
+    <canvas id="SpacecraftWeight"></canvas>
+  </div>
+
+  <div class="col-4">
+    <canvas id="SpacecraftVolume"></canvas>
+  </div>
+  <div class="col-2">
+
+  </div>
+</div>
+</div>
+
+
+
+
+<script>
+var ctx = document.getElementById("SpacecraftWeight").getContext('2d');
+var SpacecraftWeight = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["Cygnus", "Progress", "Kounotori", "Dragon"],
+        datasets: [{
+            label: 'Weight',
+            data: [2000, 2400, 5200, 6000],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+<script>
+var ctx = document.getElementById("SpacecraftVolume").getContext('2d');
+var SpacecraftVolume = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["Cygnus", "Progress", "Kounotori", "Dragon"],
+        datasets: [{
+            label: 'Volume',
+            data: [18.9, 7.6, 14, 10],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+</body>
+</html>

@@ -136,4 +136,3 @@ print ("===")
 print (cargoListId['CL1#1'].weight)
 
 # MAAR dit mag bijvoorbeeld niet in classes
-    
