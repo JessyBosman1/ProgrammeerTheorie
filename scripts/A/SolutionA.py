@@ -1,6 +1,8 @@
-import main
 import random
 import itertools
+import sys
+sys.path.append("..")
+import main
 
 
 def parcelNormalizer(type):

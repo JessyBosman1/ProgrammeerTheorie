@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import main
 import random
 import itertools

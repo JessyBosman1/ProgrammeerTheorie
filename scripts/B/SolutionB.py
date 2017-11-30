@@ -1,7 +1,13 @@
+import sys
+sys.path.append("..")
+sys.path.append("A")
+print(sys.path)
 import main
 import analyse
 import random
 import itertools
+
+
 
 
 def parcelNormalizer(type):
@@ -128,17 +134,16 @@ for spacelist in shuffleList:
 		elif total == maxScore:
 			lowPrice.append(price)
 		for y in spacelist:
-			print y, attempt[spacelist][y][0]
+			print (y, attempt[spacelist][y][0])
 			print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload, str(round(spaceCraftId[y].currentPayload/spaceCraftId[y].maxPayload*100, 2))+"%")
 			print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, str(round(spaceCraftId[y].currentPayloadMass/spaceCraftId[y].maxPayloadMass*100, 2))+"%")
-			print len(attempt[spacelist][y][0]) , attempt[spacelist][y][1]
-			print '---------------'
+			print (len(attempt[spacelist][y][0]) , attempt[spacelist][y][1])
+			print ('---------------')
 
-		print total, price
-		print '---------------'
-		print
+		print (total, price)
+		print ('---------------')
 
-print maxScore, min(lowPrice)
+print (maxScore, min(lowPrice))
 
 
 

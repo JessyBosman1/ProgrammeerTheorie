@@ -2,6 +2,8 @@ import csv
 import os.path
 import random
 import itertools
+import sys
+sys.path.append("..")
 import main
 import analyseA
 spaceCraftId = main.createObjectsSpaceCraft()
