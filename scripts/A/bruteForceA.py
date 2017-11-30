@@ -2,6 +2,8 @@ import csv
 import os.path
 import random
 import itertools
+import sys
+sys.path.append("..")
 import main
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
