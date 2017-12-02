@@ -3,6 +3,63 @@ import itertools
 import sys
 sys.path.append("..")
 import main
+import csv
+
+def getBestRun(spaceCrafts, attempt, spacelist, filename, printResults=False, storeResults=True):
+    """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
+    Met printresults kan je de informatie terugvinden in je terminal"""
+    cargoListId = main.createObjectsCargoList()
+    craftOrder = [ order for order in attempt.keys()]
+    highPercentage = [0,0]
+    highAmount = 0
+    bestOrder = ""
+    output = []
+
+    # bekijkt alle volgordes
+    for order in craftOrder:
+        outputPreparation = []
+        parcelCounter = 0
+        percentageCounter = [0,0]
+
+        # bekijkt alle schepen
+        for ship in spacelist:
+            outputPreparation.append([parcel for parcel in attempt[order][ship].keys()])
+            spaceCrafts[ship].reset()
+
+            #Bereidt de class voor
+            for parcel in attempt[order][ship]:
+                spaceCrafts[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                parcelCounter += 1
+            
+            # Berekent het algemene percentage
+            percentageCounter[0] += spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100
+            percentageCounter[1] += spaceCraftId[ship].currentPayloadMass / spaceCraftId[ship].maxPayloadMass * 100
+        
+        # Berekent het gemiddelde percentage
+        percentageCounter[0] = percentageCounter[0]/len(spacelist)
+        percentageCounter[1] = percentageCounter[1]/len(spacelist)
+        
+        # update highscores
+        if sum(percentageCounter) / 2 > sum(highPercentage) / 2 and parcelCounter >= highAmount:
+            highPercentage = percentageCounter
+            highAmount = parcelCounter
+            output = outputPreparation
+            bestOrder = order
+    
+    #als printresultaten gewenst zijn, print de functie het gedetailleerd uit
+    if printResults:
+        print (bestOrder, highPercentage,highAmount)
+        for x in range(0, len(spacelist)):
+            print (spacelist[x], len(output[x]), output[x])
+            print( "------------------------")
+
+    if storeResults:
+        # Slaat het op in de aangewezen csv        
+        with open(filename, 'w', newline='') as csvfile:
+            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            spamwriter.writerow(spacelist)
+            for x in output:
+                spamwriter.writerow(x)
 
 
 def parcelNormalizer(type):
@@ -43,8 +100,8 @@ def parcelNormalizer(type):
 
 # Checks if which is more available: volume or weight if these are the same it chooses the main chosen ranking
 def findSpace(spaceCrafts, ship, chosen, weightList, volumeList):
-    volumeLeft = spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100.0
-    weightLeft = spaceCraftId[ship].currentPayloadMass / spaceCraftId[ship].maxPayloadMass * 100.0
+    volumeLeft = spaceCrafts[ship].currentPayload / spaceCrafts[ship].maxPayload * 100.0
+    weightLeft = spaceCrafts[ship].currentPayloadMass / spaceCrafts[ship].maxPayloadMass * 100.0
 
     if volumeLeft<weightLeft:
         return volumeList[0], "v"
@@ -84,72 +141,73 @@ def top50Maker(preference):
         parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))
         return top50, parcelRankVol, parcelRankWeight
 
+def logicalSolution():
+    spaceCraftId = main.createObjectsSpaceCraft()
+    cargoListId = main.createObjectsCargoList()
+    nameList = [ship for ship in spaceCraftId]
 
-spaceCraftId = main.createObjectsSpaceCraft()
-cargoListId = main.createObjectsCargoList()
-nameList = [ship for ship in spaceCraftId]
-
-# Shuffles the ships
-spaceList = ['Progress', 'Cygnus', 'Kounotori', 'Dragon']
-shuffleGen = itertools.permutations(spaceList, len(spaceList))
-shuffleList = [x for x in shuffleGen]
+    # Shuffles the ships
+    spaceList = ['Progress', 'Cygnus', 'Kounotori', 'Dragon']
+    shuffleGen = itertools.permutations(spaceList, len(spaceList))
+    shuffleList = [x for x in shuffleGen]
 
 
-maxScore = 79
-attempt = {}
-# Loop through all the permutations
-for spacelist in shuffleList:
-    total = 0
-    done = []
-    attempt[spacelist] = {}
+    maxScore = 79
+    attempt = {}
+    # Loop through all the permutations
+    for spacelist in shuffleList:
+        total = 0
+        done = []
+        attempt[spacelist] = {}
 
-    # Loop through each ship
-    for ship in spacelist:
-        spaceCraftId[ship].reset()
-        cargo = {}
-        # Change this number to choose the prefered sorting mechanism
-        chosen, volumeList, weightList = top50Maker(1)
+        # Loop through each ship
+        for ship in spacelist:
+            spaceCraftId[ship].reset()
+            cargo = {}
+            # Change this number to choose the prefered sorting mechanism
+            chosen, volumeList, weightList = top50Maker(1)
 
-        # Remove already added parcels
-        for x in done:
-            if x in chosen:
-                chosen.remove(x)
-                volumeList.remove(x)
-                weightList.remove(x)
+            # Remove already added parcels
+            for x in done:
+                if x in chosen:
+                    chosen.remove(x)
+                    volumeList.remove(x)
+                    weightList.remove(x)
 
-        # Loops through all the parcels
-        for x in range(0, len(chosen)):
-            # Finds the optimal parcel
-            parcel, symbol = findSpace(spaceCraftId, ship, chosen, volumeList, weightList)
+            # Loops through all the parcels
+            for x in range(0, len(chosen)):
+                # Finds the optimal parcel
+                parcel, symbol = findSpace(spaceCraftId, ship, chosen, volumeList, weightList)
 
-            # Checks if the parcel fits
-            if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-                spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-                cargo[parcel] = symbol
-                done.append(parcel)
+                # Checks if the parcel fits
+                if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                    spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                    cargo[parcel] = symbol
+                    done.append(parcel)
 
-            # Remove this parcel, added or not, from the list
-            chosen.remove(parcel)
-            volumeList.remove(parcel)
-            weightList.remove(parcel)
+                # Remove this parcel, added or not, from the list
+                chosen.remove(parcel)
+                volumeList.remove(parcel)
+                weightList.remove(parcel)
 
-        # Collects the attempts
-        attempt[spacelist][ship] = cargo
-        total += len(cargo)
+            # Collects the attempts
+            attempt[spacelist][ship] = cargo
+            total += len(cargo)
 
-    # Checks for highscores
-    if total >= maxScore:
-        maxScore = total
-        for y in spacelist:
-            print (y, attempt[spacelist][y])
-            print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload,
-                   str(round(spaceCraftId[y].currentPayload / spaceCraftId[y].maxPayload * 100, 2)) + "%")
-            print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
-                   str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
-            print (len(attempt[spacelist][y]))
+        # Checks for highscores
+        if total >= maxScore:
+            maxScore = total
+            for y in spacelist:
+                print (y, attempt[spacelist][y])
+                print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload,
+                       str(round(spaceCraftId[y].currentPayload / spaceCraftId[y].maxPayload * 100, 2)) + "%")
+                print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
+                       str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
+                print (len(attempt[spacelist][y]))
+                print ('---------------')
+
+            print (total)
             print ('---------------')
 
-        print (total)
-        print ('---------------')
-
-print (maxScore)
+    print (maxScore)
+    getBestRun(spaceCraftId, attempt, spaceList,"attempt1.csv", True)

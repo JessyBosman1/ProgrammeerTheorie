@@ -63,6 +63,10 @@ class spaceCraft(object):
             self.currentPayloadMass = self.currentPayloadMass + parcelMass
             self.currentPayload = self.currentPayload + parcelPayload
 
+    def removeParcelFromCraft(self, parcelMass, parcelPayload):
+        # removes parcel from a spacecraft
+        self.currentPayloadMass = self.currentPayloadMass - parcelMass
+        self.currentPayload = self.currentPayload - parcelPayload
     def calculateFuel(self, standardFuel=0):
         #(Mass + Payload-mass) x FtW / (1-FtW) = F
         if standardFuel == 0:
@@ -131,7 +135,7 @@ def createObjectsCargoList():
 
 spaceCraftId = createObjectsSpaceCraft()
 cargoListId = createObjectsCargoList()
-
+"""
 ### >> TESTCODE <<
 print (spaceCraftId['Dragon'])
 print (spaceCraftId['Dragon'].nation)
@@ -139,3 +143,4 @@ print (spaceCraftId['Cygnus'].organisation)
 print (spaceCraftId['Cygnus'].spacecraft)
 print ("===")
 print (cargoListId['CL1#1'].weight)
+"""
