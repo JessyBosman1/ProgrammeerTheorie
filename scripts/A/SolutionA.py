@@ -5,9 +5,10 @@ sys.path.append("..")
 import main
 import csv
 
-def getBestRun(spaceCrafts, attempt, spacelist, filename, printResults=False, storeResults=True):
+def getBestRun(attempt, spacelist, filename, printResults=False, storeResults=True, addResults=False):
     """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
     Met printresults kan je de informatie terugvinden in je terminal"""
+    spaceCraftId = main.createObjectsSpaceCraft()
     cargoListId = main.createObjectsCargoList()
     craftOrder = [ order for order in attempt.keys()]
     highPercentage = [0,0]
@@ -24,11 +25,11 @@ def getBestRun(spaceCrafts, attempt, spacelist, filename, printResults=False, st
         # bekijkt alle schepen
         for ship in spacelist:
             outputPreparation.append([parcel for parcel in attempt[order][ship].keys()])
-            spaceCrafts[ship].reset()
+            spaceCraftId[ship].reset()
 
             #Bereidt de class voor
             for parcel in attempt[order][ship]:
-                spaceCrafts[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 parcelCounter += 1
             
             # Berekent het algemene percentage
@@ -53,6 +54,8 @@ def getBestRun(spaceCrafts, attempt, spacelist, filename, printResults=False, st
             print (spacelist[x], len(output[x]), output[x])
             print( "------------------------")
 
+
+
     if storeResults:
         # Slaat het op in de aangewezen csv        
         with open(filename, 'w', newline='') as csvfile:
@@ -61,6 +64,18 @@ def getBestRun(spaceCrafts, attempt, spacelist, filename, printResults=False, st
             for x in output:
                 spamwriter.writerow(x)
 
+    elif addResults:
+        # voegt het toe aan de csv
+        with open(filename, 'a', newline='') as csvfile:
+            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            firstRow = []
+            for y in spacelist:
+                firstRow.append(y)
+            firstRow.append(highAmount)
+            firstRow.append(highPercentage)
+            spamwriter.writerow(firstRow)
+            for x in output:
+                spamwriter.writerow(x)
 
 def parcelNormalizer(type):
     # Retrieve objects from the main.py
@@ -210,4 +225,4 @@ def logicalSolution():
             print ('---------------')
 
     print (maxScore)
-    getBestRun(spaceCraftId, attempt, spaceList,"attempt1.csv", True)
+    getBestRun(attempt, spaceList,"attempt1.csv", True)
