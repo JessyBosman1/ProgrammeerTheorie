@@ -92,9 +92,10 @@ def getEfficiency(spaceList):
 	percentageCounter[1] = percentageCounter[1]/len(spaceList)
 	return sum(percentageCounter)/2
 
-def hillClimber(filename, saveFile, removedParcels=10, totalIter=10000, attemptIter=150):
+def hillClimber(filename, saveFile, removedParcels=5, totalIter=10000, attemptIter=20):
 	"""De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
 	recordBroken = 0
+	unchanged = 0
 	spaceList, dividedParcels = openResults(filename)
 	runs = 0
 	usedParcels, unusedParcels, allParcels = getParcels(dividedParcels)
@@ -104,7 +105,12 @@ def hillClimber(filename, saveFile, removedParcels=10, totalIter=10000, attemptI
 		combinationRuns = 0
 		runs += 1
 		if runs %250 == 0:
+			unchanged += 1
 			print(runs*attemptIter, recordBroken)
+			if unchanged == 25:
+				sendToSave(dividedParcels, spaceList, "record.csv")
+				return
+				
 		chosenParcels = parcelPicker(usedParcels, removedParcels)
 		#Combination attempt
 		while (combinationRuns <= attemptIter):
@@ -130,6 +136,7 @@ def hillClimber(filename, saveFile, removedParcels=10, totalIter=10000, attemptI
 
 			if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList)):
 				print(getScore(dividedAttempt), highScore)
+				unchanged = 0
 				sendToSave(dividedAttempt,spaceList, saveFile)
 				highEfficiencyScore=getEfficiency(spaceList)
 				recordBroken += 1
@@ -137,6 +144,7 @@ def hillClimber(filename, saveFile, removedParcels=10, totalIter=10000, attemptI
 				for x in dividedAttempt:
 					dividedParcels.append(x)
 			elif(getScore(dividedAttempt)>highScore):
+				unchanged = 0
 				print(getScore(dividedAttempt), highScore)
 				sendToSave(dividedAttempt,spaceList, saveFile)
 				highEfficiencyScore=getEfficiency(spaceList)
@@ -144,4 +152,7 @@ def hillClimber(filename, saveFile, removedParcels=10, totalIter=10000, attemptI
 				dividedParcels = []
 				for x in dividedAttempt:
 					dividedParcels.append(x)
-hillClimber("random1.csv","run_random4.csv",5,100000,20)
+random_runs = 200000
+counter = 0
+while(counter<random_runs):
+	hillClimber("random1.csv","random1Attempt_100x_1000000_20_5.csv",5,100000,20)
