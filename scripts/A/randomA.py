@@ -6,6 +6,8 @@ import sys
 sys.path.append("..")
 import main
 from random import shuffle
+import time
+starttime = time.time()
 
 def randomAlgorithm(numberofloops, stopnumber=97):
     """ Function that fills the spacecrafts randomly.
@@ -24,7 +26,7 @@ def randomAlgorithm(numberofloops, stopnumber=97):
     shuffleList = [x for x in shuffleGen]
 
     # Initialize a variable that keeps track of the largest number of parcels
-    memoryCount = 0
+    memoryCount = 77
 
     # Create an random order of parcels
     randomList = [x for x in range(1,101)]
@@ -82,7 +84,7 @@ def randomAlgorithm(numberofloops, stopnumber=97):
                     packetCount += 1
 
             # Only print the result when there are more than 78 parcels in the spacecrafts
-            if packetCount > 77:
+            if packetCount > memoryCount:
                 print ('<<Info>>')
                 print (packetCount)
                 print (spacer[0], space0)
@@ -102,6 +104,9 @@ def randomAlgorithm(numberofloops, stopnumber=97):
                     print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
                        str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
 
+                endtime = time.time()
+                print("Tijd: ", endtime - starttime)
+
             
             if packetCount == stopnumber or packetCount > stopnumber:
                 return spacer[0], space0, spacer[1], space1, spacer[2], space2, spacer[3], space3, spaceCraftId
@@ -109,3 +114,4 @@ def randomAlgorithm(numberofloops, stopnumber=97):
         if packetCount > memoryCount:
             memoryCount = packetCount
             print(memoryCount)
+

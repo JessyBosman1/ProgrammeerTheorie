@@ -7,6 +7,8 @@ sys.path.append("..")
 import main
 import randomA
 from random import shuffle
+import time
+starttime = time.time()
 
 cargoListId = main.createObjectsCargoList()
 
@@ -136,3 +138,5 @@ for loop in range(500000):
                    str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
             print (spacer[0], len(space0), spacer[1], len(space1))#,"Progress", len(Progress), "Kounotori", len(Kounotori), "\n")
             print ("Total: ", packetCount)
+            endtime = time.time()
+            print("Tijd: ", endtime - starttime)
