@@ -110,8 +110,8 @@ def randomAlgorithm(numberofloops, stopnumber=97):
             
             if packetCount == stopnumber or packetCount > stopnumber:
                 return spacer[0], space0, spacer[1], space1, spacer[2], space2, spacer[3], space3, spaceCraftId
-        # Keep track of the highest parcelcount
-        if packetCount > memoryCount:
-            memoryCount = packetCount
-            print(memoryCount)
+            # Keep track of the highest parcelcount
+            if packetCount > memoryCount:
+                memoryCount = packetCount
+                print(memoryCount)
 
