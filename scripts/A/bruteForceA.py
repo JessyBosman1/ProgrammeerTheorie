@@ -5,6 +5,9 @@ import itertools
 import sys
 sys.path.append("..")
 import main
+import time
+starttime = time.time()
+
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
 
@@ -27,6 +30,7 @@ counter = 0
 # used to remember last iteration, to skip the loop if the fitting parcels would be the same
 lastIteration = []
 packetCount = 1
+memorycount = 0
 
 print ('<<START LOOP>>')
 for combi in combinations:
@@ -73,12 +77,11 @@ for combi in combinations:
             Dragon.append(parcel)
             packetCount += 1
 
-    if packetCount > 90:
+    if packetCount > memorycount:
+        memorycount = packetCount
         print ('<<Info>>')
         print (list(combi)[:packetCount])
         print (packetCount)
-
-
         print ('<<Info>>')
         print ("Progress", Progress)
         print ('---------------')
@@ -96,7 +99,8 @@ for combi in combinations:
                str(round(spaceCraftId[y].currentPayload / spaceCraftId[y].maxPayload * 100, 2)) + "%")
             print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
                str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
-
+        endtime = time.time()
+        print("Tijd: ", endtime - starttime)
         break
 
 
