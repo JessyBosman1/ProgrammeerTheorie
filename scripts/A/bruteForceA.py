@@ -8,12 +8,6 @@ import main
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
 
-for craft in spaceCraftId.keys():
-    print (spaceCraftId['Cygnus'].maxPayload)
-
-print(spaceCraftId['Cygnus'].calculateFuel())
-
-
 # little check to see the total parcel weight and volume
 print ('<<TOTAL LOAD>>')
 totalWeight = 0
@@ -21,10 +15,10 @@ totalVolume = 0
 for parcel in cargoListId.keys():
     totalWeight = totalWeight + cargoListId[parcel].weight
     totalVolume = totalVolume + cargoListId[parcel].volume
-print (totalWeight)
-print (totalVolume)
+print ("Total weight: ", totalWeight)
+print ("Total volume: ", totalVolume)
 
-# <<ASSIGNMENT 1>>
+
 # create all permutations of cargolist
 combinations = itertools.permutations(cargoListId.keys(), len(cargoListId.keys()))
 
@@ -34,14 +28,18 @@ counter = 0
 lastIteration = []
 packetCount = 1
 
+print ('<<START LOOP>>')
 for combi in combinations:
+    counter += 1
+    if counter % 10000 == 0 and counter % 10000 != 0:
+        print("Current loop number:", counter)
+
     # if the new list has the same packets in front as fitted in the one before, skip iteration
     # <! used for optimalisation >
     if list(combi)[:packetCount] == lastIteration[:packetCount]:
         continue
     lastIteration = list(combi)
 
-    counter += 1
     # keep track of the number of parcels in the spaceCrafts
     packetCount = 0
 
@@ -50,68 +48,55 @@ for combi in combinations:
     spaceCraftId['Cygnus'].reset()
     spaceCraftId['Kounotori'].reset()
     spaceCraftId['Dragon'].reset()
+    Progress = []
+    Cygnus = []
+    Kounotori = []
+    Dragon = []
 
     # for every parcel in combination
     for parcel in combi:
         # if there is room: add
-        if spaceCraftId['Progress'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+        if spaceCraftId['Progress'].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
             spaceCraftId['Progress'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            Progress.append(parcel)
             packetCount += 1
-        elif spaceCraftId['Cygnus'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+        elif spaceCraftId['Cygnus'].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
             spaceCraftId['Cygnus'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            Cygnus.append(parcel)
             packetCount += 1
-        elif spaceCraftId['Kounotori'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+        elif spaceCraftId['Kounotori'].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
             spaceCraftId['Kounotori'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            Kounotori.append(parcel)
             packetCount += 1
-        elif spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+        elif spaceCraftId['Dragon'].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
             spaceCraftId['Dragon'].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+            Dragon.append(parcel)
             packetCount += 1
 
     if packetCount > 90:
         print ('<<Info>>')
         print (list(combi)[:packetCount])
         print (packetCount)
-        #print (spaceCraftId['Progress'].currentPayloadMass)
-        #print (spaceCraftId['Progress'].currentPayload)
-        #print (spaceCraftId['Progress'].maxPayloadMass)
-        #print (spaceCraftId['Progress'].maxPayload)
+
+
+        print ('<<Info>>')
+        print ("Progress", Progress)
+        print ('---------------')
+        print ("Cygnus", Cygnus)
+        print ('---------------')
+        print ("Kounotori", Kounotori)
+        print ('---------------')
+        print ("Dragon", Dragon)
+        print ('---------------')
+        print ("Progress", len(Progress), "Cygnus", len(Cygnus), "Kounotori", len(Kounotori), "Dragon", len(Dragon), "\n")
+
+        for y in spaceCraftId.keys():
+            print(y)
+            print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload,
+               str(round(spaceCraftId[y].currentPayload / spaceCraftId[y].maxPayload * 100, 2)) + "%")
+            print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
+               str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
+
         break
 
-    ''' # Enable to make the loop stop prematurely''' 
-    #if counter == 100000:
-    #    break
 
-"""
-Cygnus = 0
-CygnusVol = 0
-Progress = 0
-ProgressVol = 0
-Kounotori = 0
-KounotoriVol = 0
-Dragon = 0
-DragonVol = 0
-CygLoad = []
-
-#randomList = random.sample(range(1,101), 100)
-for i in randomList:
-    parcel = 'CL1#' + str(i)
-    print parcel
-    print (cargoListId[parcel].weight, cargoListId[parcel].volume, cargoListId[parcel].cargoId)
-    # Temporar
-    tempMass = ((float(spaceCraftId['Cygnus'].fuelToWeight) * (Cygnus + float(spaceCraftId['Cygnus'].mass)))) / (1 - float(spaceCraftId['Cygnus'].fuelToWeight) )
-    # Put the maximum weigth of the spacecraft Cygnus in a variable
-    maxMassCygnus = (float(spaceCraftId['Cygnus'].payloadMass) + float(spaceCraftId['Cygnus'].mass))
-    print tempMass, maxMassCygnus
-    # Check if the payload or volume are smaller than the
-    # payload and volume when the parcel is added
-    if maxMassCygnus > (tempMass + float(cargoListId[parcel].weight)) and float(spaceCraftId['Cygnus'].payload) > (CygnusVol + float(cargoListId[parcel].volume)):
-        # Add the parcel weigth to the curent weigth
-        Cygnus += float(cargoListId[parcel].weight)
-        # Add the colume to the current weigth
-        CygnusVol += float(cargoListId[parcel].volume)
-        # Add the parcel ID to the list with added parcels
-        CygLoad.append(cargoListId[parcel].cargoId)
-
-    # hier moet voor elke andere spacecraft
-print CygLoad
-"""
