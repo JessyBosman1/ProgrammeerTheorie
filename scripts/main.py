@@ -79,7 +79,10 @@ class spaceCraft(object):
 def createObjectsSpaceCraft():
     '''Create an instance of each parcel with Class cargoList '''
     # get the data for parcels from cvs
-    spaceCraftCsv = readFile('../../data/Spacecrafts.csv')
+    try:
+        spaceCraftCsv = readFile('../../data/Spacecrafts.csv')
+    except:
+        spaceCraftCsv = readFile('../data/Spacecrafts.csv')
 
     # dict to store key value pair of name and class name.
     # Neceresary to make for loop work with instances.
@@ -117,7 +120,10 @@ def createObjectsCargoList():
     '''Create an instance of each parcel with Class cargoList '''
     # get the data for parcels from cvs
 
-    cargoListCsv = readFile('../../data/CargoList1.csv')
+    try:
+        cargoListCsv = readFile('../../data/CargoList1.csv')
+    except:
+        cargoListCsv = readFile('../data/CargoList1.csv')
 
     # dict to store key value pair of name and class name.
     # Neceresary to make for loop work with instances.

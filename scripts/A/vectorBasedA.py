@@ -6,6 +6,9 @@ import sys
 sys.path.append("..")
 import main
 import analyseA
+import time
+starttime = time.time()
+
 spaceCraftId = main.createObjectsSpaceCraft()
 cargoListId = main.createObjectsCargoList()
 spaceCraftRank = analyseA.shipNormalizer()
@@ -58,13 +61,15 @@ total=0
 for x in final:
 	print (x, final[x])
 	total+=final[x][1]
-print(total)	
-
-
-
-
-
-
+print(total)
+for y in spaceCraftId.keys():
+	print(y)
+	print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload,
+		str(round(spaceCraftId[y].currentPayload / spaceCraftId[y].maxPayload * 100, 2)) + "%")
+	print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
+		str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
+endtime = time.time()
+print("Tijd: ", endtime - starttime)	
 
 def firstTry():
 	spaceCraftId = main.createObjectsSpaceCraft()
@@ -98,4 +103,5 @@ def firstTry():
 		print ("Parcels in this ship:", amountOfParcels)
 		print ("Room left: ",spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload, " m^3 and ",spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass," kg")
 		print (parcelsCompleted, len(parcelsCompleted))
+
 
