@@ -101,6 +101,6 @@ for combi in combinations:
                str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
         endtime = time.time()
         print("Tijd: ", endtime - starttime)
-        break
+        #break
 
 
