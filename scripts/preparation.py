@@ -49,11 +49,10 @@ def findSpace(spaceCrafts, ship, chosen, weightList, volumeList):
     volumeLeft = spaceCrafts[ship].currentPayload / spaceCrafts[ship].maxPayload * 100.0
     weightLeft = spaceCrafts[ship].currentPayloadMass / spaceCrafts[ship].maxPayloadMass * 100.0
 
-    if volumeLeft<weightLeft:
+    if volumeLeft < weightLeft:
         return volumeList[0], "v"
-    elif volumeLeft>weightLeft:
+    elif volumeLeft > weightLeft:
         return weightList[0], "w"
-
     else:
         return chosen[0], "p"
 
@@ -69,20 +68,20 @@ def shortlistMaker(top50, toShorten):
 
 # 1: vector, 2: volume 3: weight
 def top50Maker(preference):
-    if preference==1:
-        top50=parcelNormalizer(1)
+    if preference == 1:
+        top50 = parcelNormalizer(1)
         parcelRankVol = shortlistMaker(top50, parcelNormalizer(2))
         parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))    
         return top50, parcelRankVol, parcelRankWeight
     
-    elif preference==2:
-        top50=parcelNormalizer(2)
+    elif preference == 2:
+        top50 = parcelNormalizer(2)
         parcelRankVol = shortlistMaker(top50, parcelNormalizer(2))
         parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))
         return top50, parcelRankVol, parcelRankWeight
     
     else:
-        top50=parcelNormalizer(3)
+        top50 = parcelNormalizer(3)
         parcelRankVol = shortlistMaker(top50, parcelNormalizer(2))
         parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))
         return top50, parcelRankVol, parcelRankWeight
