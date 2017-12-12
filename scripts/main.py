@@ -76,13 +76,13 @@ class spaceCraft(object):
     def calculateCost(self, fuel):
         return self.baseCost + int(fuel*1000) * 5
 
-def createObjectsSpaceCraft():
+def createObjectsSpaceCraft(assignment=""):
     '''Create an instance of each parcel with Class cargoList '''
     # get the data for parcels from cvs
     try:
-        spaceCraftCsv = readFile('../../data/Spacecrafts.csv')
+        spaceCraftCsv = readFile('../../data/Spacecrafts'+assignment+'.csv')
     except:
-        spaceCraftCsv = readFile('../data/Spacecrafts.csv')
+        spaceCraftCsv = readFile('../data/Spacecrafts'+assignment+'.csv')
 
     # dict to store key value pair of name and class name.
     # Neceresary to make for loop work with instances.
@@ -139,8 +139,9 @@ def createObjectsCargoList(parcellistnumber=1):
     # return dict to be able to find objects
     return cargoListId
 
-spaceCraftId = createObjectsSpaceCraft()
-cargoListId = createObjectsCargoList()
+if __name__ == '__main__':
+    spaceCraftId = createObjectsSpaceCraft()
+    cargoListId = createObjectsCargoList()
 """
 ### >> TESTCODE <<
 print (spaceCraftId['Dragon'])

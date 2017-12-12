@@ -7,8 +7,8 @@ import SolutionA
 import csv
 
 
-spaceCraftId = main.createObjectsSpaceCraft()
-cargoListId = main.createObjectsCargoList()
+spaceCraftId = main.createObjectsSpaceCraft("DE")
+cargoListId = main.createObjectsCargoList(3)
 
 
 def openResults(filename):
@@ -66,8 +66,8 @@ def prepareSpaceCrafts(spaceList, dividedParcels):
 			spaceCraftId[shipName].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 
 def sendToSave(dividedParcels, spaceList, filename):
-	spaceCraftId = main.createObjectsSpaceCraft()
-	cargoListId = main.createObjectsCargoList()
+	spaceCraftId = main.createObjectsSpaceCraft("DE")
+	cargoListId = main.createObjectsCargoList(3)
 	output = {}
 	output["attempt"] = {}
 	for ship in range(0,len(spaceList)):
@@ -92,11 +92,13 @@ def getEfficiency(spaceList):
 	percentageCounter[1] = percentageCounter[1]/len(spaceList)
 	return sum(percentageCounter)/2
 
-def hillClimber(filename, saveFile, removedParcels=5, totalIter=10000, attemptIter=20):
+def hillClimber(filename, saveFile, unusedParcels, removedParcels=5, totalIter=10000, attemptIter=20):
 	"""De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
 	recordBroken = 0
 	unchanged = 0
 	spaceList, dividedParcels = openResults(filename)
+	if len(unusedParcels)!=0:
+		dividedParcels=unusedParcels
 	runs = 0
 	usedParcels, unusedParcels, allParcels = getParcels(dividedParcels)
 	prepareSpaceCrafts(spaceList,dividedParcels)
@@ -108,7 +110,7 @@ def hillClimber(filename, saveFile, removedParcels=5, totalIter=10000, attemptIt
 			unchanged += 1
 			print(runs*attemptIter, recordBroken)
 			if unchanged == 25:
-				sendToSave(dividedParcels, spaceList, "record.csv")
+				sendToSave(dividedParcels, spaceList, "record3.csv")
 				return
 				
 		chosenParcels = parcelPicker(usedParcels, removedParcels)
@@ -152,7 +154,24 @@ def hillClimber(filename, saveFile, removedParcels=5, totalIter=10000, attemptIt
 				dividedParcels = []
 				for x in dividedAttempt:
 					dividedParcels.append(x)
-random_runs = 200000
-counter = 0
-while(counter<random_runs):
-	hillClimber("random1.csv","random1Attempt_100x_1000000_20_5.csv",5,100000,20)
+	print (len(unusedParcels))
+	return unusedParcels;
+
+
+if __name__ == '__main__':
+	spaceCraftId = main.createObjectsSpaceCraft("DE")
+	cargoListId = main.createObjectsCargoList(3)
+	while(0<20000):
+		counter = 0
+		remainingParcels=[]
+
+		while(counter<2):
+			if len(remainingParcels)==0:
+				counter+=1
+			print(len(remainingParcels))
+			remainingParcels = hillClimber("randomList3.csv","random3Attempt_100x_1000000_20_5.csv", remainingParcels, 5,100000,20)
+			print(len(remainingParcels))
+		with open("record3.csv", 'a', newline='') as csvfile:
+	            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+	            spamwriter.writerow("end attempt")
+	    csvfile.close()

@@ -11,7 +11,7 @@ def getBestRun(attempt, spacelist, filename, printResults=False, storeResults=Tr
     """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
     Met printresults kan je de informatie terugvinden in je terminal"""
     spaceCraftId = main.createObjectsSpaceCraft()
-    cargoListId = main.createObjectsCargoList()
+    cargoListId = main.createObjectsCargoList(2)
     craftOrder = [order for order in attempt.keys()]
     highPercentage = [0,0]
     highAmount = 0
@@ -81,7 +81,7 @@ def getBestRun(attempt, spacelist, filename, printResults=False, storeResults=Tr
 
 def logicalSolution():
     spaceCraftId = main.createObjectsSpaceCraft()
-    cargoListId = main.createObjectsCargoList()
+    cargoListId = main.createObjectsCargoList(2)
     nameList = [ship for ship in spaceCraftId]
 
     # Shuffles the ships
@@ -155,4 +155,4 @@ def logicalSolution():
 
     getBestRun(attempt, spaceList, fullpath, True)
 
-logicalSolution()
+#logicalSolution()

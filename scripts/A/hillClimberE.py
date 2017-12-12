@@ -7,8 +7,8 @@ import SolutionA
 import csv
 
 
-spaceCraftId = main.createObjectsSpaceCraft()
-cargoListId = main.createObjectsCargoList()
+spaceCraftId = main.createObjectsSpaceCraft("DE")
+cargoListId = main.createObjectsCargoList(3)
 
 
 def openResults(filename):
@@ -66,8 +66,8 @@ def prepareSpaceCrafts(spaceList, dividedParcels):
 			spaceCraftId[shipName].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 
 def sendToSave(dividedParcels, spaceList, filename):
-	spaceCraftId = main.createObjectsSpaceCraft()
-	cargoListId = main.createObjectsCargoList()
+	spaceCraftId = main.createObjectsSpaceCraft("DE")
+	cargoListId = main.createObjectsCargoList(3)
 	output = {}
 	output["attempt"] = {}
 	for ship in range(0,len(spaceList)):
@@ -108,7 +108,7 @@ def hillClimber(filename, saveFile, removedParcels=5, totalIter=10000, attemptIt
 			unchanged += 1
 			print(runs*attemptIter, recordBroken)
 			if unchanged == 25:
-				sendToSave(dividedParcels, spaceList, "record.csv")
+				sendToSave(dividedParcels, spaceList, "record3.csv")
 				return
 				
 		chosenParcels = parcelPicker(usedParcels, removedParcels)
@@ -152,7 +152,12 @@ def hillClimber(filename, saveFile, removedParcels=5, totalIter=10000, attemptIt
 				dividedParcels = []
 				for x in dividedAttempt:
 					dividedParcels.append(x)
-random_runs = 200000
-counter = 0
-while(counter<random_runs):
-	hillClimber("random1.csv","random1Attempt_100x_1000000_20_5.csv",5,100000,20)
+
+
+if __name__ == '__main__':
+	spaceCraftId = main.createObjectsSpaceCraft("DE")
+	cargoListId = main.createObjectsCargoList(3)
+	random_runs = 200000
+	counter = 0
+	while(counter<random_runs):
+		hillClimber("randomList3.csv","random3Attempt_100x_1000000_20_5.csv",5,100000,20)
