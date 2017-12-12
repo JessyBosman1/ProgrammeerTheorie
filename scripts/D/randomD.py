@@ -30,7 +30,7 @@ def randomAlgorithmD(numberofloops):
     for loop in range(numberofloops):
         # Print loop every now and then to keep user updated
         if loop % 100 == 0 and loop % 1000 != 0:
-            print("Current loop number:", loop)
+            print("Current loop number:", loop, "Best totalprice = ", totalprice, " while flying ", len(bestattemptdict.keys()), " times" )
 
         # Randomize the order in de parcellist
         parcelList = [parcel for parcel in cargoListId.keys()]
@@ -124,8 +124,12 @@ def fillSpacecrafts(parcelList, spaceCraftId, cargoListId, spacecraftList):
         volume[spacecraft] = spaceCraftId[spacecraft].currentPayload
         ftw = spaceCraftId[spacecraft].fuelToWeight
         spaceCraftId[spacecraft].calculateFuel(ftw)
-        price[spacecraft] =  spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
-        runprice += spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
+        if spaceCraftId[spacecraft].currentPayloadMass != 0 and spaceCraftId[spacecraft].currentPayload != 0:
+            price[spacecraft] =  spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
+            runprice += spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
+        else:
+            price[spacecraft] = 0
+            runprice += 0
     returndict = {"Parcellists":parceldict, "NumberOfParcels":aantalparcels, "weight":weight, "volume":volume, "price":price}
     return returndict, parcelList, runprice
 randomAlgorithmD(10000000);
