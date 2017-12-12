@@ -116,14 +116,14 @@ class cargoList(object):
         self.weight = Weight
         self.volume = Volume
 
-def createObjectsCargoList():
+def createObjectsCargoList(parcellistnumber=1):
     '''Create an instance of each parcel with Class cargoList '''
     # get the data for parcels from cvs
 
     try:
-        cargoListCsv = readFile('../../data/CargoList1.csv')
+        cargoListCsv = readFile('../../data/CargoList' + str(parcellistnumber) + '.csv')
     except:
-        cargoListCsv = readFile('../data/CargoList1.csv')
+        cargoListCsv = readFile('../data/CargoList' + str(parcellistnumber) + '.csv')
 
     # dict to store key value pair of name and class name.
     # Neceresary to make for loop work with instances.
