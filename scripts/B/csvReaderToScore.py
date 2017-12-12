@@ -3,7 +3,6 @@ sys.path.append("..")
 sys.path.append("../A")
 import main
 import csv
-from itertools import zip_longest
 
 def formatCostAsDollars(cost):
 	""" Format cost to dollars to make it more readable	"""
