@@ -9,7 +9,7 @@ def readFile(relativePath):
 
         return list(reader)
 
-parcelCsv = readFile('../../data/CargoList1.csv')
+parcelCsv = readFile('../../data/CargoList3.csv')
 
 parcelInfo = []
 for dictionary in parcelCsv:
@@ -37,7 +37,7 @@ var scatterChart = new Chart(ctx, {
     type: 'scatter',
     data: {
         datasets: [{
-            label: 'Scatter Dataset',
+            label: 'Scatterplot Parcel List 3',
             fill: false,
             showLine: false,
             pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -64,6 +64,6 @@ var scatterChart = new Chart(ctx, {
 </html>
 """
 
-Html_file= open("parcelScatter.html","w")
+Html_file= open("parcelScatter3.html","w")
 Html_file.write(html_str)
 Html_file.close()
