@@ -29,7 +29,7 @@ def randomAlgorithmD(numberofloops):
     spaceCraftId, cargoListId, spacecraftList, parcelList = randomHelper()
     for loop in range(numberofloops):
         # Print loop every now and then to keep user updated
-        if loop % 10000 == 0 and loop % 10000 != 0:
+        if loop % 100 == 0 and loop % 1000 != 0:
             print("Current loop number:", loop)
 
         # Randomize the order in de parcellist
@@ -47,14 +47,14 @@ def randomAlgorithmD(numberofloops):
                 results[counter] =  runresult
                 parcelList = runlist
                 totalprice += runprice
-        print(totalprice, len(results.keys()))
+        #print(totalprice, len(results.keys()))
         if totalprice < bestattemptprice:
             bestattemptprice = totalprice
             bestattemptdict = results
             print ("<<<< NEW BEST, ", totalprice, " DOLLARS WHILE FLYING ", len(bestattemptdict.keys()), " TIMES >>>>")
     print ("<<<< BEST FOUND, ", totalprice, " DOLLARS WHILE FLYING ", len(bestattemptdict.keys()), " TIMES >>>>")
     testlijst = []
-    
+
     """ Testje om te checken als er iets aangepast wordt
     for k,v in results.items():
         for x,y in v.items():
@@ -123,8 +123,9 @@ def fillSpacecrafts(parcelList, spaceCraftId, cargoListId, spacecraftList):
         weight[spacecraft] = spaceCraftId[spacecraft].currentPayloadMass
         volume[spacecraft] = spaceCraftId[spacecraft].currentPayload
         ftw = spaceCraftId[spacecraft].fuelToWeight
-        price[spacecraft] = spaceCraftId[spacecraft].calculateFuel(ftw) + spaceCraftId[spacecraft].baseCost
-        runprice += spaceCraftId[spacecraft].calculateFuel(ftw) + spaceCraftId[spacecraft].baseCost
+        spaceCraftId[spacecraft].calculateFuel(ftw)
+        price[spacecraft] =  spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
+        runprice += spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
     returndict = {"Parcellists":parceldict, "NumberOfParcels":aantalparcels, "weight":weight, "volume":volume, "price":price}
     return returndict, parcelList, runprice
-randomAlgorithmD(1500);
+randomAlgorithmD(10000000);
