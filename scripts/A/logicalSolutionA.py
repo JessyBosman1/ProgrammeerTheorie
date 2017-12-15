@@ -6,12 +6,11 @@ sys.path.append("..")
 import main
 import preparation
 import csv
-
 import supportFunctionsHillClimber as supportHC
 
 def logicalSolution():
     spaceCraftId = main.createObjectsSpaceCraft()
-    cargoListId = main.createObjectsCargoList(2)
+    cargoListId = main.createObjectsCargoList()
     nameList = [ship for ship in spaceCraftId]
 
     # Shuffles the ships
@@ -83,7 +82,7 @@ def logicalSolution():
     path = "../savedResults"
     fullpath = os.path.join(path, filename)
 
-    getBestRun(attempt, spaceList, fullpath, True)
+    supportHC.getBestRun(attempt, spaceList, fullpath,cargoListId, spaceCraftId, True)
 
 if __name__ == "__main__":
     logicalSolution()

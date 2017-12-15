@@ -10,4 +10,4 @@ if __name__ == "__main__":
 	random_runs = 200000
 	counter = 0
 	while(counter<random_runs):
-		supportHC.hillClimber("random1.csv","random1Attempt_100x_1000000_20_5.csv","highScore_A.csv",cargoListId,spaceCraftId,5,100000,20)
+		supportHC.hillClimber("random1.csv","random1Attempt_100x_1000000_20_5.csv","highScore_A.csv",cargoListId,spaceCraftId,5,10000,20)
