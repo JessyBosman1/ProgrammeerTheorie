@@ -30,7 +30,7 @@ def parcelNormalizer():
 
 def shipNormalizer():
 	# Retrieve objects from the main.py
-	spaceCraftId = main.createObjectsSpaceCraft()	
+	spaceCraftId = main.createObjectsSpaceCraft()
 	# Creating the necessary lists obtained from the object
 	nameList = [ship for ship in spaceCraftId]
 	weightList = [spaceCraftId[ship].maxPayloadMass for ship in spaceCraftId]
@@ -49,10 +49,11 @@ def shipNormalizer():
 	# Vectorized descending ranking of ships, based on a combined variable between Weight and Volume
 	ranking = sorted(vectorizedShips,key=vectorizedShips.get,reverse=True)
 	return ranking
-	
-cargoListId = main.createObjectsCargoList()
-# Creating the necessary lists obtained from the object
-nameList = [parcel for parcel in cargoListId]
-for x in nameList:
-	if x not in parcelNormalizer():
-		print(cargoListId[x].weight)
+
+if __name__ == "__main__":
+	cargoListId = main.createObjectsCargoList()
+	# Creating the necessary lists obtained from the object
+	nameList = [parcel for parcel in cargoListId]
+	for x in nameList:
+		if x not in parcelNormalizer():
+			print(cargoListId[x].weight)
