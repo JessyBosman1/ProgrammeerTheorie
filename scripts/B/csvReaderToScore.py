@@ -20,7 +20,7 @@ def calculatescore(fueltype=1):
 	cargoListId = main.createObjectsCargoList()
 
 	# Read the csv file and make a list of lists out of it
-	with open("../A/random1Attempt_100x_1000000_20_5.csv") as csvfile:
+	with open("../A/record.csv") as csvfile:
 		reader = csv.reader(csvfile)
 		data = list(list(rec) for rec in csv.reader(csvfile, delimiter=','))
 
