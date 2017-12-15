@@ -30,7 +30,7 @@ def randomAlgorithmD(numberofloops):
     for loop in range(numberofloops):
         # Print loop every now and then to keep user updated
         if loop % 100 == 0 and loop % 1000 != 0:
-            print("Current loop number:", loop, "Best totalprice = ", totalprice, " while flying ", len(bestattemptdict.keys()), " times" )
+            print("Current loop number:", loop, "Best totalprice = ", bestattemptprice, " while flying ", len(bestattemptdict.keys()), " times" )
 
         # Randomize the order in de parcellist
         parcelList = [parcel for parcel in cargoListId.keys()]
