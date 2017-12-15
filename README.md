@@ -10,7 +10,9 @@ Vincent Damen - 11034734
 
 ## Vergelijking algoritmen en algemene uitleg algoritmen
 [Deze wiki legt kort de voor- en nadelen van de gebruikte algoritmen uit](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Algemene-beschrijving-algortimen)  
-[Deze wiki gaat in op de vergelijking van de algoritmen (Experimentatie)](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Experimentatie:-Vergelijking-algoritmen-A) 
+
+[Deze wiki gaat in op de vergelijking van de algoritmen (Experimentatie)](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Experimentatie:-Vergelijking-algoritmen-A)  
+
 [Deze wiki beschijft onze gemaakte keuzes en experimentatie bij vraag D en E](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Keuzes-en-experimentatie-bij-D-en-E)
 
 ## Getting started
