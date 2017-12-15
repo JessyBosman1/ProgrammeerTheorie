@@ -4,8 +4,6 @@ import random
 import itertools
 import sys
 
-spaceCraftId = main.createObjectsSpaceCraft()
-cargoListId = main.createObjectsCargoList()
 
 def openResults(filename):
 	"""Haalt de attempt op uit een csv-bestand en returnt de spacelist
@@ -18,7 +16,7 @@ def openResults(filename):
 	dividedParcels = dividedParcels[1:]
 	return spaceList, dividedParcels
 
-def getParcels(dividedParcels):
+def getParcels(dividedParcels, cargoListId, spaceCraftId):
     """Vind alle ontbekende parcels die niet in de schepen zitten en returnt
     deze samen met een lijst van alle gebruikte parcels"""
     usedParcels = [parcel for ship in dividedParcels for parcel in ship]
@@ -51,7 +49,7 @@ def parcelRemover(chosenParcels, dividedParcels, unusedParcels):
 		dividedOutput.append(newShip)
 	return dividedOutput, unusedParcels
 
-def prepareSpaceCrafts(spaceList, dividedParcels):
+def prepareSpaceCrafts(spaceList, dividedParcels, cargoListId, spaceCraftId):
 	"""Maakt de schepen klaar om mee te testen"""
 	for ship in range(0,len(spaceList)):
 		shipName = spaceList[ship]
@@ -60,14 +58,13 @@ def prepareSpaceCrafts(spaceList, dividedParcels):
 		for parcel in dividedParcels[ship]:
 			spaceCraftId[shipName].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 
-def sendToSave(dividedParcels, spaceList, filename):
-	spaceCraftId = main.createObjectsSpaceCraft()
-	cargoListId = main.createObjectsCargoList()
+def sendToSave(dividedParcels, spaceList, filename, cargoListId, spaceCraftId):
+	
 	output = {}
 	output["attempt"] = {}
 	for ship in range(0,len(spaceList)):
 		output["attempt"][spaceList[ship]]={parcel:0 for parcel in dividedParcels[ship]}
-	getBestRun(output, spaceList, filename,True, False, True)
+	getBestRun(output, spaceList, filename, cargoListId, spaceCraftId, True, False, True)
 
 def getScore(dividedAttempt):
 	countParcels = 0
@@ -78,7 +75,7 @@ def getScore(dividedAttempt):
 def getShipOrder(spaceList):
 	return sorted(spaceList, key=lambda k: random.random())
 
-def getEfficiency(spaceList):
+def getEfficiency(spaceList, cargoListId, spaceCraftId):
 	percentageCounter = [0,0]
 	for ship in spaceList:
 		percentageCounter[0] += spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100
@@ -87,11 +84,9 @@ def getEfficiency(spaceList):
 	percentageCounter[1] = percentageCounter[1]/len(spaceList)
 	return sum(percentageCounter)/2
 
-def getBestRun(attempt, spacelist, filename, printResults=False, storeResults=True, addResults=False, cargoListNuber=1):
+def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printResults=False, storeResults=True, addResults=False, ):
     """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
     Met printresults kan je de informatie terugvinden in je terminal"""
-    spaceCraftId = main.createObjectsSpaceCraft()
-    cargoListId = main.createObjectsCargoList(cargoListNuber)
     craftOrder = [order for order in attempt.keys()]
     highPercentage = [0,0]
     highAmount = 0
@@ -158,3 +153,68 @@ def getBestRun(attempt, spacelist, filename, printResults=False, storeResults=Tr
             spamwriter.writerow(firstRow)
             for x in output:
                 spamwriter.writerow(x)
+
+def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, unusedParcels=[], returnRemainingParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25):
+    """De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
+    recordBroken = 0
+    unchanged = 0
+    spaceList, dividedParcels = openResults(filename)
+    if len(unusedParcels)!=0:
+        dividedParcels=unusedParcels
+    runs = 0
+    usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId)
+    prepareSpaceCrafts(spaceList,dividedParcels, cargoListId, spaceCraftId)
+    highEfficiencyScore = getEfficiency(spaceList, cargoListId, spaceCraftId)
+    while(runs <= totalIter):
+        combinationRuns = 0
+        runs += 1
+        if runs %250 == 0:
+            unchanged += 1
+            print(runs*attemptIter, recordBroken)
+            if unchanged == failRule:
+                sendToSave(dividedParcels, spaceList, highscoreFile, cargoListId, spaceCraftId)
+                return
+
+        chosenParcels = parcelPicker(usedParcels, removedParcels)
+        #Combination attempt
+        while (combinationRuns <= attemptIter):
+            highScore = getScore(dividedParcels)
+
+            usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId)
+            combinationRuns += 1
+            dividedAttempt, unusedAttempt = parcelRemover(chosenParcels, dividedParcels, unusedParcels)
+            prepareSpaceCrafts(spaceList, dividedAttempt, cargoListId, spaceCraftId)
+            #placing attempt
+            while (len(unusedAttempt) != 0):
+                parcel = random.choice(unusedAttempt)
+                toPlace = True
+                #vind het juiste schip
+                for ship in getShipOrder(spaceList):
+                    if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False and toPlace:
+                        spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                        dividedAttempt[spaceList.index(ship)].append(parcel)
+                        toPlace = False
+
+
+                unusedAttempt.remove(parcel)
+
+            if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList, cargoListId, spaceCraftId)):
+                print(getScore(dividedAttempt), highScore)
+                unchanged = 0
+                sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
+                highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
+                recordBroken += 1
+                dividedParcels = []
+                for x in dividedAttempt:
+                    dividedParcels.append(x)
+            elif(getScore(dividedAttempt)>highScore):
+                unchanged = 0
+                print(getScore(dividedAttempt), highScore)
+                sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
+                highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
+                recordBroken += 1
+                dividedParcels = []
+                for x in dividedAttempt:
+                    dividedParcels.append(x)
+    if returnRemainingParcels:
+        return unusedParcels
