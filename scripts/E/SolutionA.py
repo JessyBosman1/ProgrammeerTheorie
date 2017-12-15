@@ -68,7 +68,7 @@ def getBestRun(attempt, spacelist, filename, printResults=False, storeResults=Tr
 
     elif addResults:
         # voegt het toe aan de csv
-        with open(filename, 'a', newline='') as csvfile:
+        with open(filename, 'a') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             firstRow = []
             for y in spacelist:

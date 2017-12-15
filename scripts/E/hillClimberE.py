@@ -172,6 +172,6 @@ if __name__ == '__main__':
 			remainingParcels = hillClimber("randomList3.csv","random3Attempt_100x_1000000_20_5.csv", remainingParcels, 5,100000,20)
 			print(len(remainingParcels))
 		with open("record3.csv", 'a', newline='') as csvfile:
-	            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-	            spamwriter.writerow("end attempt")
-	    csvfile.close()
+			spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			spamwriter.writerow("end attempt")
+			csvfile.close()
