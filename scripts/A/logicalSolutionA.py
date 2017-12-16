@@ -8,13 +8,12 @@ import preparation
 import csv
 import supportFunctionsHillClimber as supportHC
 
-def logicalSolution():
+def logicalSolution(spaceList):
     spaceCraftId = main.createObjectsSpaceCraft()
     cargoListId = main.createObjectsCargoList()
     nameList = [ship for ship in spaceCraftId]
 
     # Shuffles the ships
-    spaceList = ['Progress', 'Cygnus', 'Kounotori', 'Dragon']
     shuffleGen = itertools.permutations(spaceList, len(spaceList))
     shuffleList = [x for x in shuffleGen]
 
@@ -85,4 +84,4 @@ def logicalSolution():
     supportHC.getBestRun(attempt, spaceList, fullpath,cargoListId, spaceCraftId, True)
 
 if __name__ == "__main__":
-    logicalSolution()
+    logicalSolution(['Progress', 'Cygnus', 'Kounotori', 'Dragon'])
