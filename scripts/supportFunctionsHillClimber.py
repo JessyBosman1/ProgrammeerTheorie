@@ -16,12 +16,35 @@ def openResults(filename):
 	dividedParcels = dividedParcels[1:]
 	return spaceList, dividedParcels
 
-def getParcels(dividedParcels, cargoListId, spaceCraftId):
+
+
+def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels):
+    """Genereert een randomship met inhoud op basis van de usedparcels"""
+    spaceList = [spaceCraftId[ship].spacecraft for ship in spaceCraftId]
+    parcels = [cargoListId[parcel].cargoId for parcel in cargoListId if parcel not in usedParcels]
+    output  = []
+    output.append(spaceList)
+    for x in range(0,len(spaceList)):
+        parcelContainer = []
+        added = False
+        while(not added):
+            chosenParcel = random.choice(parcels)
+            if chosenParcel not in parcelContainer:
+                parcelContainer.append(random.choice(parcels))
+                output.append(parcelContainer)
+                added = True
+    with open(filename, 'w', newline='') as csvfile:
+            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            for x in output:
+                spamwriter.writerow(x)
+
+
+def getParcels(dividedParcels, cargoListId, spaceCraftId,uParcels=[]):
     """Vind alle ontbekende parcels die niet in de schepen zitten en returnt
     deze samen met een lijst van alle gebruikte parcels"""
-    usedParcels = [parcel for ship in dividedParcels for parcel in ship]
-    unusedParcels = [parcel for parcel in cargoListId if parcel not in usedParcels]
-    allParcels = [parcel for parcel in cargoListId]
+    usedParcels = [parcel for ship in dividedParcels for parcel in ship if parcel not in uParcels]
+    unusedParcels = [parcel for parcel in cargoListId if parcel not in usedParcels and parcel not in uParcels]
+    allParcels = [parcel for parcel in cargoListId if parcel not in uParcels]
     return usedParcels, unusedParcels, allParcels
 
 def parcelPicker(usedParcels, amount=10):
@@ -60,11 +83,11 @@ def prepareSpaceCrafts(spaceList, dividedParcels, cargoListId, spaceCraftId):
 
 def sendToSave(dividedParcels, spaceList, filename, cargoListId, spaceCraftId):
 	
-	output = {}
-	output["attempt"] = {}
-	for ship in range(0,len(spaceList)):
-		output["attempt"][spaceList[ship]]={parcel:0 for parcel in dividedParcels[ship]}
-	getBestRun(output, spaceList, filename, cargoListId, spaceCraftId, True, False, True)
+    output = {}
+    output["attempt"] = {}
+    for ship in range(0,len(spaceList)):
+        output["attempt"][spaceList[ship]]={parcel:0 for parcel in dividedParcels[ship]}
+    getBestRun(output,spaceList,filename,cargoListId,spaceCraftId,True,False,True)
 
 def getScore(dividedAttempt):
 	countParcels = 0
@@ -84,7 +107,7 @@ def getEfficiency(spaceList, cargoListId, spaceCraftId):
 	percentageCounter[1] = percentageCounter[1]/len(spaceList)
 	return sum(percentageCounter)/2
 
-def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printResults=False, storeResults=True, addResults=False, ):
+def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printResults=False, storeResults=True, addResults=False):
     """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
     Met printresults kan je de informatie terugvinden in je terminal"""
     craftOrder = [order for order in attempt.keys()]
@@ -135,7 +158,7 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
 
     if storeResults:
         # Slaat het op in de aangewezen csv
-        with open(filename, 'w') as csvfile:
+        with open(filename, 'w', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow(spacelist)
             for x in output:
@@ -143,7 +166,7 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
 
     elif addResults:
         # voegt het toe aan de csv
-        with open(filename, 'a') as csvfile:
+        with open(filename, 'a', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             firstRow = []
             for y in spacelist:
@@ -154,15 +177,13 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
             for x in output:
                 spamwriter.writerow(x)
 
-def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, unusedParcels=[], returnRemainingParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25):
+def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uParcels=[], returnUsedParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25):
     """De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
     recordBroken = 0
     unchanged = 0
     spaceList, dividedParcels = openResults(filename)
-    if len(unusedParcels)!=0:
-        dividedParcels=unusedParcels
     runs = 0
-    usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId)
+    usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId,uParcels)
     prepareSpaceCrafts(spaceList,dividedParcels, cargoListId, spaceCraftId)
     highEfficiencyScore = getEfficiency(spaceList, cargoListId, spaceCraftId)
     while(runs <= totalIter):
@@ -173,14 +194,17 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, un
             print(runs*attemptIter, recordBroken)
             if unchanged == failRule:
                 sendToSave(dividedParcels, spaceList, highscoreFile, cargoListId, spaceCraftId)
-                return
+                if returnUsedParcels:
+                    return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
+                else:
+                    return
 
         chosenParcels = parcelPicker(usedParcels, removedParcels)
         #Combination attempt
         while (combinationRuns <= attemptIter):
             highScore = getScore(dividedParcels)
 
-            usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId)
+            usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
             combinationRuns += 1
             dividedAttempt, unusedAttempt = parcelRemover(chosenParcels, dividedParcels, unusedParcels)
             prepareSpaceCrafts(spaceList, dividedAttempt, cargoListId, spaceCraftId)
@@ -216,5 +240,4 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, un
                 dividedParcels = []
                 for x in dividedAttempt:
                     dividedParcels.append(x)
-    if returnRemainingParcels:
-        return unusedParcels
+
