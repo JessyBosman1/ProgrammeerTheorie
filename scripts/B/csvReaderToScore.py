@@ -10,17 +10,17 @@ def formatCostAsDollars(cost):
 	finalPriceFormatted = "$" + amount
 	return finalPriceFormatted
 
-def calculatescore(fueltype=1):
+def calculatescore(pathtofile, fueltype=1, cargolistnum=1):
 	"""Input: fueltype, bepaald of de daadwerkelijke waardes of de
 	   waarde 0,73 als fuel to weight gebruikt moet worden.
 	   Type 1 is daadwerkelijke waardes
 	   Type 2 is 0,73 voor alle"""
 	# Create spaceships and parcel objects
 	spaceCraftId = main.createObjectsSpaceCraft()
-	cargoListId = main.createObjectsCargoList()
+	cargoListId = main.createObjectsCargoList(cargolistnum)
 
 	# Read the csv file and make a list of lists out of it
-	with open("../A/record.csv") as csvfile:
+	with open(pathtofile) as csvfile:
 		reader = csv.reader(csvfile)
 		data = list(list(rec) for rec in csv.reader(csvfile, delimiter=','))
 
@@ -88,13 +88,7 @@ def calculatescore(fueltype=1):
 
 	return bestCost, bestList, dollars
 
-def printResult():
-	# Get the information with the real fuel to weight values
-	price, parcellist, dollars = calculatescore(1)
-
-	# Get the information with the fake fuel to weight values
-	priceNR, parcellistNR, dollarsNR = calculatescore(2)
-
+def printResult(price, parcellist, dollars, priceNR, parcellistNR, dollarsNR):
 	print("<<< SUMMARY >>>")
 	print("<<< RESULTS WITH FAKE FUEL TO WEIGHT VALUE >>>")
 	print("Cygnus:", parcellistNR[0])
@@ -110,9 +104,15 @@ def printResult():
 	print("Dragon:", parcellist[3])
 	print("The lowest price found is: ", dollars)
 	print("<<< Difference >>>")
-	print("The difference is $", price - priceNR)
+	print("The difference is $", str(priceNR - price))
 
 
 if __name__ == '__main__':
-	printResult()
+	# Get the information with the real fuel to weight values
+	price, parcellist, dollars = calculatescore("../A/record.csv", 1)
+
+	# Get the information with the fake fuel to weight values
+	priceNR, parcellistNR, dollarsNR = calculatescore("../A/record.csv", 2)
+
+	printResult(price, parcellist, dollars, priceNR, parcellistNR, dollarsNR)
 
