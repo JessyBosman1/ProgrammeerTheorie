@@ -10,6 +10,9 @@ def send1Spacecraft():
     spacecraftobject = main.createObjectsSpaceCraft("DE")
     cargoobject = main.createObjectsCargoList(3)
 
+    tester = spacecraftobject['Cygnus']
+    print ("HOII", tester.currentPayload)
+
     # Create a random order of parcels
     parcels = [parcel for parcel in cargoobject.keys()]
 

@@ -132,4 +132,6 @@ def fillSpacecrafts(parcelList, spaceCraftId, cargoListId, spacecraftList):
             runprice += 0
     returndict = {"Parcellists":parceldict, "NumberOfParcels":aantalparcels, "weight":weight, "volume":volume, "price":price}
     return returndict, parcelList, runprice
-randomAlgorithmD(10000000);
+
+if __name__ == '__main__':
+    randomAlgorithmD(10000000);
