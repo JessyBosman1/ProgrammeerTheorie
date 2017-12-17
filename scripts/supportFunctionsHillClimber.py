@@ -18,7 +18,7 @@ def openResults(filename):
 
 
 
-def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels):
+def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels=[]):
     """Genereert een randomship met inhoud op basis van de usedparcels"""
     spaceList = [spaceCraftId[ship].spacecraft for ship in spaceCraftId]
     parcels = [cargoListId[parcel].cargoId for parcel in cargoListId if parcel not in usedParcels]
