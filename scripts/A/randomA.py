@@ -27,7 +27,7 @@ def randomAlgorithm(numberofloops, stopnumber=97):
     shuffleList = [x for x in shuffleGen]
 
     # Initialize a variable that keeps track of the largest number of parcels
-    memoryCount = 78
+    memoryCount = 77
 
     # Create an random order of parcels
     randomList = [parcel for parcel in cargoListId.keys()]
@@ -55,7 +55,7 @@ def randomAlgorithm(numberofloops, stopnumber=97):
 
             # Try to fit every parcel in a spacecraft
             for parcel in randomList:
-                for spacecraft in spaceList:
+                for spacecraft in spacer:
                     if spaceCraftId[spacecraft].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
                         spaceCraftId[spacecraft].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                         spaceCraftId[spacecraft].addParcelToParcellist(parcel)
@@ -67,14 +67,15 @@ def randomAlgorithm(numberofloops, stopnumber=97):
                 memoryCount = packetCount
                 print ('<<Info>>')
                 for spacecraft in spaceList:
-                    print(spacecraft, len(spaceCraftId[spacecraft].parcellist), spaceCraftId[spacecraft].parcellist)
+                    print(spacecraft)
+                    print(len(spaceCraftId[spacecraft].parcellist), spaceCraftId[spacecraft].parcellist)
                     print ("Payload (current, max)", spaceCraftId[spacecraft].currentPayload, spaceCraftId[spacecraft].maxPayload,
                        str(round(spaceCraftId[spacecraft].currentPayload / spaceCraftId[spacecraft].maxPayload * 100, 2)) + "%")
                     print ("PayloadMass (current, max)", spaceCraftId[spacecraft].currentPayloadMass, spaceCraftId[spacecraft].maxPayloadMass, 
                        str(round(spaceCraftId[spacecraft].currentPayloadMass / spaceCraftId[spacecraft].maxPayloadMass * 100, 2)) + "%")
                 endtime = time.time()
                 print("Time: ", endtime - starttime, " seconds")
-                print ('<<Total of '+ str(memoryCount) + ' parcels was found>>')
+                print ('<<Total of '+ str(memoryCount) + ' parcels was found>>\n')
 
             if packetCount == stopnumber or packetCount > stopnumber:
                 """Ja deze returnt even niks fix ik morgen, kusjes xxx"""
