@@ -2,6 +2,7 @@ import csv
 import os.path
 import random
 import itertools
+
 # open csv file with relative path
 def readFile(relativePath):
     ''' Read csv file and return generator of information'''
@@ -22,6 +23,7 @@ class spaceCraft(object):
     fuelToWeight = float
     currentPayloadMass = 0
     currentPayload = 0
+    parcellist = []
 
     # Used to create instance for itself if parameters are passed
     def __init__(self, Spacecraft, Nation, Organisation, PayloadMass,
@@ -36,48 +38,65 @@ class spaceCraft(object):
         self.fuelToWeight = fuelToWeight
         self.currentPayloadMass = 0
         self.currentPayload = 0
+        self.parcellist = []
 
     def reset(self):
-        ''' restore parameters from start
+        ''' Restore parameters from start
         '''
         self.currentPayloadMass = 0
         self.currentPayload = 0
+        self.parcellist = []
 
     def checkFitCraft(self, parcelMass, parcelPayload):
         ''' Check if the parcel fits in the spacecraft.
-            If yes: add, if no: notify
+            If yes: return true, if no: return false.
         '''
         if self.currentPayloadMass + parcelMass < self.maxPayloadMass and self.currentPayload + parcelPayload < self.maxPayload:
             return True
 
         elif self.currentPayloadMass + parcelMass > self.maxPayloadMass:
-            #print ("To Heavy")
             return False
 
         elif self.currentPayload + parcelPayload > self.maxPayload:
-            #print ("To Big")
             return False
 
     def addParcelToCraft(self, parcelMass, parcelPayload):
-            # add parcel weigh and payload to spacecraft.
-            self.currentPayloadMass = self.currentPayloadMass + parcelMass
-            self.currentPayload = self.currentPayload + parcelPayload
+        ''' Adds the mass and the volume of a parcel to the spacecraft
+        '''
+        self.currentPayloadMass = self.currentPayloadMass + parcelMass
+        self.currentPayload = self.currentPayload + parcelPayload
 
     def removeParcelFromCraft(self, parcelMass, parcelPayload):
-        # removes parcel from a spacecraft
+        ''' Removes the mass and volume of a parcel from a spacecraft
+        '''
         self.currentPayloadMass = self.currentPayloadMass - parcelMass
         self.currentPayload = self.currentPayload - parcelPayload
+
+    def addParcelToParcellist(self, parcel):
+        ''' Adds the parcel to the spacecraft
+        '''
+        self.parcellist.append(parcel)
+
+    def removeParcelFromParcellist(self, parcel):
+        ''' Removes the parcel from the parcellist of the spacecraft
+        '''
+        self.parcellist.remove(parcel)
+
     def calculateFuel(self, standardFuel=0):
-        #(Mass + Payload-mass) x FtW / (1-FtW) = F
+        ''' Calculates the fuel of the spacecraft
+        '''
         if standardFuel == 0:
             standardFuel = self.fuelToWeight
         return round(self.mass + self.currentPayloadMass * self.fuelToWeight / (1-standardFuel), 2)
 
     def calculateCost(self, fuel):
+        ''' Calculates the total costs of the spacecraft
+        '''
         return self.baseCost + int(fuel*1000) * 5
 
 def createObjectsSpaceCraft(assignment=""):
-    '''Create an instance of each parcel with Class cargoList '''
+    '''Create an instance of each parcel with Class cargoList 
+    '''
     # get the data for parcels from cvs
     try:
         spaceCraftCsv = readFile('../../data/Spacecrafts'+assignment+'.csv')
