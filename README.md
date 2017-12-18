@@ -20,6 +20,8 @@ Om de scripts te runnen moet er in de commandline worden genavigeerd naar de map
 De bestanden main.py en preparation.py zijn bestanden met voorbereidingsfuncties en dataobjecten. Deze geven uit zichzelf geen output maar worden aangeroepen in andere bestanden.  
 Om de visualisatie in werking te zien kan er worden genavigeerd naar de map vizualization en moet het bestand createLoadDistribution.py worden aangeroepen met python (deze opent 4 vensters, door het eerste venster te sluiten komt de 2e tevoorschijn etc.). Om deze visualisatie te kunnen zien moet matplotlib geinstalleerd zijn (zie hieronder voor meer informatie).
 
+Elk algorithme voert zichzelf uit via de __main__ functie in het script, waar de juiste parameters al zijn ingevoerd. Andere parameters kunnen worden ingevoerd om het antwoord voor andere parcellijsten of spacecrafts door te rekenen.  
+
 ## Map structuur
 
 ### data
