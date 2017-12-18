@@ -4,6 +4,18 @@ import random
 import itertools
 import sys
 
+def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,wantedShipment):
+    sending = supportHC.openResults(filenameSendings)[1][wantedShipment]
+    CurrentCargoList = '../../data/' + outputFilename + '.csv'
+    with open(CurrentCargoList, "w", newline='') as file:
+        spamwriter = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow(['parcel_ID','weight (kg)','volume (m^3)'])
+        for item in sending:
+            stats = []
+            stats.append(item)
+            stats.append(oldCargolistId[item].weight)
+            stats.append(oldCargolistId[item].volume)
+            spamwriter.writerow(stats)
 
 def openResults(filename):
 	"""Haalt de attempt op uit een csv-bestand en returnt de spacelist
@@ -15,8 +27,6 @@ def openResults(filename):
 	spaceList = dividedParcels[0]
 	dividedParcels = dividedParcels[1:]
 	return spaceList, dividedParcels
-
-
 
 def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels=[]):
     """Genereert een randomship met inhoud op basis van de usedparcels"""
@@ -107,6 +117,14 @@ def getEfficiency(spaceList, cargoListId, spaceCraftId):
 	percentageCounter[1] = percentageCounter[1]/len(spaceList)
 	return sum(percentageCounter)/2
 
+def getFinancialResult(spaceList,cargoListId,spaceCraftId):
+    price = 0
+    for ship in spaceList:
+        fuel = ship.calculateFuel()
+        price += ship.calculateCost(fuel)
+    return price
+
+
 def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printResults=False, storeResults=True, addResults=False):
     """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
     Met printresults kan je de informatie terugvinden in je terminal"""
@@ -177,7 +195,7 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
             for x in output:
                 spamwriter.writerow(x)
 
-def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uParcels=[], returnUsedParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25):
+def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uParcels=[], returnUsedParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25, financialConstraint=False):
     """De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
     recordBroken = 0
     unchanged = 0
@@ -186,6 +204,8 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
     usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId,uParcels)
     prepareSpaceCrafts(spaceList,dividedParcels, cargoListId, spaceCraftId)
     highEfficiencyScore = getEfficiency(spaceList, cargoListId, spaceCraftId)
+    if(financialConstraint):
+        lowestPriceScore = getFinancialResult(spaceList,cargoListId,spaceCraftId)
     while(runs <= totalIter):
         combinationRuns = 0
         runs += 1
@@ -218,26 +238,47 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                         spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                         dividedAttempt[spaceList.index(ship)].append(parcel)
                         toPlace = False
-
-
                 unusedAttempt.remove(parcel)
 
-            if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList, cargoListId, spaceCraftId)):
-                print(getScore(dividedAttempt), highScore)
-                unchanged = 0
-                sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
-                highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
-                recordBroken += 1
-                dividedParcels = []
-                for x in dividedAttempt:
-                    dividedParcels.append(x)
-            elif(getScore(dividedAttempt)>highScore):
-                unchanged = 0
-                print(getScore(dividedAttempt), highScore)
-                sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
-                highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
-                recordBroken += 1
-                dividedParcels = []
-                for x in dividedAttempt:
-                    dividedParcels.append(x)
+
+            if (financialConstraint):
+                if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList, cargoListId, spaceCraftId) and lowestPriceScore>getFinancialResult(spaceList,cargoListId,spaceCraftId)):
+                    lowestPriceScore = getFinancialResult(spaceList, cargoListId, spaceCraftId)
+                    print(getScore(dividedAttempt), highScore, lowestPriceScore)
+                    unchanged = 0
+                    sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
+                    highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
+                    recordBroken += 1
+                    dividedParcels = []
+                    for x in dividedAttempt:
+                        dividedParcels.append(x)
+                elif(getScore(dividedAttempt)>highScore):
+                    unchanged = 0
+                    print(getScore(dividedAttempt), highScore, lowestPriceScore)
+                    sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
+                    highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
+                    lowestPriceScore = getFinancialResult(spaceList, cargoListId, spaceCraftId)
+                    recordBroken += 1
+                    dividedParcels = []
+                    for x in dividedAttempt:
+                        dividedParcels.append(x)
+            else:
+                if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList, cargoListId, spaceCraftId)):
+                    print(getScore(dividedAttempt), highScore)
+                    unchanged = 0
+                    sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
+                    highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
+                    recordBroken += 1
+                    dividedParcels = []
+                    for x in dividedAttempt:
+                        dividedParcels.append(x)
+                elif(getScore(dividedAttempt)>highScore):
+                    unchanged = 0
+                    print(getScore(dividedAttempt), highScore)
+                    sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
+                    highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
+                    recordBroken += 1
+                    dividedParcels = []
+                    for x in dividedAttempt:
+                        dividedParcels.append(x)
 
