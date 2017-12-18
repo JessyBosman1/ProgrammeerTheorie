@@ -4,10 +4,7 @@ sys.path.append("..")
 import supportFunctionsHillClimber as supportHC
 import main
 import csv
-
-
-
-if __name__ == '__main__':
+def HillClimberE():
 	spaceCraftId = main.createObjectsSpaceCraft("DE")
 	cargoListId = main.createObjectsCargoList(3)
 
@@ -31,3 +28,6 @@ if __name__ == '__main__':
 			else:
 				counter += 1
 		runs +=1
+
+if __name__ == '__main__':
+	HillClimberE()
