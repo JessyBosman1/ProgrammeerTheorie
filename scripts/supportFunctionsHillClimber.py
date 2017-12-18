@@ -4,19 +4,28 @@ import random
 import itertools
 import sys
 
-def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,wantedShipment,unusedInCsv=False,AddExtraParcels=[]):
+def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,wantedShipment,unusedInCsv=False, AddExtraParcels=[]):
+    """ Creates a temporary Cargolist to use to hillclimber efficiently over multiple shipments
+    """
+    # Opens the csv and retrieves the required data
     unusedParcels, sending = openResults(filenameSendings,unusedInCsv)
     sending = sending[wantedShipment]
+
+    # Creates the name of the new Cargolist
     CurrentCargoList = '../../data/CargoList' + outputFilename + '.csv'
+
+    # Creates the csv-file and saves the data of the parcels in it
     with open(CurrentCargoList, "w", newline='') as file:
         spamwriter = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(['parcel_ID','weight (kg)','volume (m^3)'])
+        # For each parcel the Name, Weight and Volume is taken from the main Cargolist
         for item in sending:
             stats = []
             stats.append(item)
             stats.append(oldCargolistId[item].weight)
             stats.append(oldCargolistId[item].volume)
             spamwriter.writerow(stats)
+        # AddExtraParcels contains never before used parcels which need to be used later
         for extra in AddExtraParcels:
             if extra not in sending:
                 stats = []
@@ -24,23 +33,25 @@ def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,want
                 stats.append(oldCargolistId[extra].weight)
                 stats.append(oldCargolistId[extra].volume)
                 spamwriter.writerow(stats)
+    # This returns the requested unused Parcels, retrieved from the openResults function
     if unusedInCsv:
         return unusedParcels
 
 def SaveToRetry(filename, UsedList):
+    """ Saves the lists of shipments in a csv file"""
     name = [x for x in range(0,len(UsedList))]
+    # This creates a new csv file to store the shipments in
     with open(filename, "w", newline='') as file:
         spamwriter = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(name)
         for item in UsedList:
             spamwriter.writerow(item)
 
-
-
 def openResults(filename,unusedInCsv=False):
-    """Haalt de attempt op uit een csv-bestand en returnt de spacelist
-    en de verdeling"""
+    """Retrieves an attempt and returns the division of parcels in a list of list and the ships.
+    If unusedInCsv is true, then it returns the unused parcels and the divided parcels"""
     if(not unusedInCsv):
+        # Opens the requested file and extracts the data
         with open(filename, "r") as file:
             reader = csv.reader(file)
             dividedParcels = list(reader)
@@ -49,6 +60,7 @@ def openResults(filename,unusedInCsv=False):
         dividedParcels = dividedParcels[1:]
         return spaceList, dividedParcels
     else:
+        # Opens the requested file and extracts the data
         with open(filename, "r") as file:
             reader = csv.reader(file)
             dividedParcels = list(reader)
@@ -58,20 +70,23 @@ def openResults(filename,unusedInCsv=False):
         return unusedParcels, dividedParcels
 
 def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels=[]):
-    """Genereert een randomship met inhoud op basis van de usedparcels"""
+    """ Generates randomly filled ship, to use as starting point to fill these ships"""
     spaceList = [spaceCraftId[ship].spacecraft for ship in spaceCraftId]
     parcels = [cargoListId[parcel].cargoId for parcel in cargoListId if parcel not in usedParcels]
     output  = []
     output.append(spaceList)
+    # For each ship it will append 1 random parcel to a ship
     for x in range(0,len(spaceList)):
         parcelContainer = []
         added = False
+        # While not every ship doesn't have a parcel, keep trying to add a parcel
         while(not added):
             chosenParcel = random.choice(parcels)
             if chosenParcel not in parcelContainer:
                 parcelContainer.append(random.choice(parcels))
                 output.append(parcelContainer)
                 added = True
+    # Stores the random list in a csv
     with open(filename, 'w', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for x in output:
@@ -79,15 +94,14 @@ def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels=[]):
 
 
 def getParcels(dividedParcels, cargoListId, spaceCraftId,uParcels=[]):
-    """Vind alle ontbekende parcels die niet in de schepen zitten en returnt
-    deze samen met een lijst van alle gebruikte parcels"""
+    """Collects and sorts all the parcels in three categories"""
     usedParcels = [parcel for ship in dividedParcels for parcel in ship if parcel not in uParcels]
     unusedParcels = [parcel for parcel in cargoListId if parcel not in usedParcels and parcel not in uParcels]
     allParcels = [parcel for parcel in cargoListId if parcel not in uParcels]
     return usedParcels, unusedParcels, allParcels
 
 def parcelPicker(usedParcels, amount=10):
-	"""Kiest een bepaald aantal random pakketten"""
+	"""Chooses n random parcels to remove from from your ships"""
 	chosenParcels = []
 
 	for x in range(0, amount):
@@ -99,7 +113,8 @@ def parcelPicker(usedParcels, amount=10):
 	return chosenParcels
 
 def parcelRemover(chosenParcels, dividedParcels, unusedParcels):
-	"""Haalt parcels uit schepen om opnieuw toe te wijzen"""
+	""" Removes the chosen parcels from the assigned parcels
+        and add them to the unused parcel list"""
 	dividedOutput = []
 	for ship in dividedParcels:
 		newShip = []
@@ -112,7 +127,7 @@ def parcelRemover(chosenParcels, dividedParcels, unusedParcels):
 	return dividedOutput, unusedParcels
 
 def prepareSpaceCrafts(spaceList, dividedParcels, cargoListId, spaceCraftId):
-	"""Maakt de schepen klaar om mee te testen"""
+	""" Prepares all the ships to restart an attempt"""
 	for ship in range(0,len(spaceList)):
 		shipName = spaceList[ship]
 		spaceCraftId[shipName].reset()
@@ -121,7 +136,7 @@ def prepareSpaceCrafts(spaceList, dividedParcels, cargoListId, spaceCraftId):
 			spaceCraftId[shipName].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 
 def sendToSave(dividedParcels, spaceList, filename, cargoListId, spaceCraftId):
-	
+	""" Prepares the input to print and save the results of the new highscore"""
     output = {}
     output["attempt"] = {}
     for ship in range(0,len(spaceList)):
@@ -129,26 +144,35 @@ def sendToSave(dividedParcels, spaceList, filename, cargoListId, spaceCraftId):
     getBestRun(output,spaceList,filename,cargoListId,spaceCraftId,True,False,True)
 
 def getScore(dividedAttempt):
+    """ Counts the amount of parcels in the shipment"""
 	countParcels = 0
 	for ship in dividedAttempt:
 		countParcels += len(ship)
 	return countParcels
 
 def getShipOrder(spaceList):
+    """ Returns a list of ships placed in a random order"""
 	return sorted(spaceList, key=lambda k: random.random())
 
 def getEfficiency(spaceList, cargoListId, spaceCraftId):
+    """ Calculates the efficiency of the ship, i.e. how full the ship is"""
 	percentageCounter = [0,0]
-	for ship in spaceList:
+	
+    # For each ship we will calculate the percentage of fullness, in volume or mass
+    for ship in spaceList:
 		percentageCounter[0] += spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100
 		percentageCounter[1] += spaceCraftId[ship].currentPayloadMass / spaceCraftId[ship].maxPayloadMass * 100
-	percentageCounter[0] = percentageCounter[0]/len(spaceList)
+	# Then we take the mean of the total means
+    percentageCounter[0] = percentageCounter[0]/len(spaceList)
 	percentageCounter[1] = percentageCounter[1]/len(spaceList)
+    # Finally we return the sum of the normalized volume and weight, divided by 2
 	return sum(percentageCounter)/2
 
 def getFinancialResult(spaceList,cargoListId,spaceCraftId):
+    """ Calculate the total price of a shipment"""
     price = 0
     for ship in spaceList:
+        # If a ship is not empty, then add the Base cost
         if spaceCraftId[ship].currentPayloadMass!=0:
             fuel = spaceCraftId[ship].calculateFuel()
             price += spaceCraftId[ship].calculateCost(fuel)
@@ -157,25 +181,28 @@ def getFinancialResult(spaceList,cargoListId,spaceCraftId):
 
 def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printResults=False, storeResults=True, addResults=False):
     """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
-    Met printresults kan je de informatie terugvinden in je terminal"""
+    Met printresults kan je de informatie terugvinden in je terminal
+
+    This function finds the best run in a dict of attempts and stores this run in an assigned csv.
+    It is also used as the main store function of hillclimber."""
     craftOrder = [order for order in attempt.keys()]
     highPercentage = [0,0]
     highAmount = 0
     bestOrder = ""
     output = []
 
-    # bekijkt alle volgordes
+    # Loops through all possible permutations of ship orders
     for order in craftOrder:
         outputPreparation = []
         parcelCounter = 0
         percentageCounter = [0,0]
 
-        # bekijkt alle schepen
+        # Checks every ship
         for ship in spacelist:
             outputPreparation.append([parcel for parcel in attempt[order][ship].keys()])
             spaceCraftId[ship].reset()
 
-            #Bereidt de class voor
+            # Prepares each class, so that calculates could be made
             for parcel in attempt[order][ship]:
                 spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 parcelCounter += 1
