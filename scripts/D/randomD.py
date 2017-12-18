@@ -12,6 +12,9 @@ starttime = time.time()
 memoryCount = 77
 
 def randomHelper():
+    """ Generates the spacraft class and cargolist class 
+    """
+
     # Prepare the spacecraft and cargolist
     spacecraftobject = main.createObjectsSpaceCraft("DE")
     cargoobject = main.createObjectsCargoList(3)
@@ -24,9 +27,15 @@ def randomHelper():
     return spacecraftobject, cargoobject, spacecrafts, parcels
 
 def randomAlgorithmD(numberofloops):
+    """ Tries to solve problem D, by fitting as many parcels in a load,
+        resetting the crafts and them fills the next load etc. untill
+        all the parcels are in a spaceship
+    """
+    # Set an unrealisticly high price as cheapest price, so cheaper attempts can be found
     bestattemptdict = {}
     bestattemptprice = 1000000000000000000000000000000000000000000000
     spaceCraftId, cargoListId, spacecraftList, parcelList = randomHelper()
+
     for loop in range(numberofloops):
         # Print loop every now and then to keep user updated
         if loop % 100 == 0 and loop % 1000 != 0:
@@ -39,32 +48,31 @@ def randomAlgorithmD(numberofloops):
         results = {}
         counter = 0
         totalprice = 0
-        parcelcheck = 1250
-        for i in range(0,100):
+
+        # We know that every ship can take at least 10 packets, so the maximum
+        # amount of loads is 1250/10/6 = 21, so try to fill a load 22 times
+        for i in range(0,22):
             counter = i
+
             if len(parcelList) != 0:
+                # Try to fill the spacecraft and save the results for
+                # future referencing
                 runresult, runlist, runprice = fillSpacecrafts(parcelList, spaceCraftId, cargoListId, spacecraftList)
                 results[counter] =  runresult
                 parcelList = runlist
                 totalprice += runprice
-        #print(totalprice, len(results.keys()))
+        
         if totalprice < bestattemptprice:
             bestattemptprice = totalprice
             bestattemptdict = results
             print ("<<<< NEW BEST, ", totalprice, " DOLLARS WHILE FLYING ", len(bestattemptdict.keys()), " TIMES >>>>")
-    print ("<<<< BEST FOUND, ", totalprice, " DOLLARS WHILE FLYING ", len(bestattemptdict.keys()), " TIMES >>>>")
-    testlijst = []
 
-    """ Testje om te checken als er iets aangepast wordt
-    for k,v in results.items():
-        for x,y in v.items():
-            if x == "Parcellists":
-                for a,b in y.items():
-                    for item in b:
-                        testlijst.append(item)
-    print(testlijst, len(testlijst))"""
+    print ("<<<< BEST FOUND, ", totalprice, " DOLLARS WHILE FLYING ", len(bestattemptdict.keys()), " TIMES >>>>")
+
 
 def fillSpacecrafts(parcelList, spaceCraftId, cargoListId, spacecraftList):
+    """ Fills the spacecrafts by trying to fit as many parcels as possible
+    """
     # Create a copy of the parcellist, because you don't want to loop
     # through a list while you are removing items from that list
     copyparcel = [x for x in parcelList]
@@ -84,52 +92,38 @@ def fillSpacecrafts(parcelList, spaceCraftId, cargoListId, spacecraftList):
 
     # Fill the spacecrafts
     for parcel in copyparcel:
-        parcelList.remove(parcel)
-        if spaceCraftId[spacecraftList[0]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId[spacecraftList[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            space0.append(parcel)
-            packetCount += 1
-        elif spaceCraftId[spacecraftList[1]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId[spacecraftList[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            space1.append(parcel)
-            packetCount += 1
-        elif spaceCraftId[spacecraftList[2]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId[spacecraftList[2]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            space2.append(parcel)
-            packetCount += 1
-        elif spaceCraftId[spacecraftList[3]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId[spacecraftList[3]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            space3.append(parcel)
-            packetCount += 1
-        elif spaceCraftId[spacecraftList[4]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId[spacecraftList[4]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            space4.append(parcel)
-            packetCount += 1
-        elif spaceCraftId[spacecraftList[5]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-            spaceCraftId[spacecraftList[5]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-            space5.append(parcel)
-            packetCount += 1
-        else:
-            parcelList.append(parcel)
-            break
+        # Loop through all the spacecrafts and see it the parcel fits, if it does, add it
+        for spacecraft in spaceCraftId.keys():
+            if spaceCraftId[spacecraft].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                spaceCraftId[spacecraft].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                spaceCraftId[spacecraft].addParcelToParcellist(parcel)
+                parcelList.remove(parcel)
+                packetCount += 1
+                break
 
-    parceldict = {spacecraftList[0]:space0, spacecraftList[1]:space1, spacecraftList[2]:space2, spacecraftList[3]:space3, spacecraftList[4]:space4, spacecraftList[5]:space5}
-    aantalparcels = {spacecraftList[0]:len(space0), spacecraftList[1]:len(space1), spacecraftList[2]:len(space2), spacecraftList[3]:len(space3), spacecraftList[4]:len(space4), spacecraftList[5]:len(space5)}
+    # Gather all the information to return
+    parceldict = {}
+    aantalparcels = {}
     weight = {}
     volume = {}
     price = {}
     runprice = 0
+
     for spacecraft in spaceCraftId.keys():
+        parceldict[spacecraft] = spaceCraftId[spacecraft].parcellist
+        aantalparcels[spacecraft] = len(spaceCraftId[spacecraft].parcellist)
         weight[spacecraft] = spaceCraftId[spacecraft].currentPayloadMass
         volume[spacecraft] = spaceCraftId[spacecraft].currentPayload
+
         ftw = spaceCraftId[spacecraft].fuelToWeight
-        spaceCraftId[spacecraft].calculateFuel(ftw)
         if spaceCraftId[spacecraft].currentPayloadMass != 0 and spaceCraftId[spacecraft].currentPayload != 0:
             price[spacecraft] =  spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
             runprice += spaceCraftId[spacecraft].calculateCost(spaceCraftId[spacecraft].calculateFuel())
         else:
             price[spacecraft] = 0
             runprice += 0
+
+    # Create the dict that will be returned
     returndict = {"Parcellists":parceldict, "NumberOfParcels":aantalparcels, "weight":weight, "volume":volume, "price":price}
     return returndict, parcelList, runprice
 
