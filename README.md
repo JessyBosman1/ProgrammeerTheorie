@@ -9,11 +9,9 @@ Vincent Damen - 11034734
 
 
 ## Vergelijking algoritmen en algemene uitleg algoritmen
-[Deze wiki legt kort de voor- en nadelen van de gebruikte algoritmen uit](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Algemene-beschrijving-algortimen)  
+[Alle documentatie is hier terug te vinden]
+(https://github.com/JessyBosman1/ProgrammeerTheorie/tree/master/documentation)
 
-[Deze wiki gaat in op de vergelijking van de algoritmen (Experimentatie)](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Experimentatie:-Vergelijking-algoritmen-A)  
-
-[Deze wiki beschijft onze gemaakte keuzes en experimentatie bij vraag D en E](https://github.com/JessyBosman1/ProgrammeerTheorie/wiki/Keuzes-en-experimentatie-bij-D-en-E)
 
 ## Getting started
 Om de scripts te runnen moet er in de commandline worden genavigeerd naar de map van de opdracht. Voor opdracht A dus naar de map A die in de map scripts staat etc. Door de scripts aan te roepen met python werken deze en printen deze een output.  
