@@ -8,11 +8,9 @@ import csv
 
 
 if __name__ == '__main__':
-	spaceCraftId = main.createObjectsSpaceCraft("Shipments")
 	cargoListId = main.createObjectsCargoList(3)
+	spaceCraftId = main.createObjectsSpaceCraft("Shipments")
 	spaceCraftIdSecond = main.createObjectsSpaceCraft("Shipments2") 
-	startFile = "randomShipments.csv"
-	supportHC.generateRandomList(startFile,cargoListId,spaceCraftId)
-	used_parcels = supportHC.hillClimber(startFile,"DividingShipmentTracker.csv","DividingShipmentResults.csv",cargoListId,spaceCraftId,[],True,12,10000,10,10)
-	supportHC.generateRandomList(startFile,cargoListId,spaceCraftId,used_parcels)
-	supportHC.hillClimber(startFile,"DividingShipmentTracker.csv","DividingShipmentResults.csv",cargoListId,spaceCraftIdSecond,used_parcels,False,12,10000,10,10)
+	startFile = "resultsFirstHalf.csv"
+	usedParcels=supportHC.getParcels(supportHC.openResults(startFile)[1], cargoListId, spaceCraftId)[0]
+	supportHC.hillClimber("randomShipments.csv","DividingShipmentTracker.csv","DividingShipmentResults.csv",cargoListId,spaceCraftIdSecond,usedParcels,False,12,10000,10,10)
