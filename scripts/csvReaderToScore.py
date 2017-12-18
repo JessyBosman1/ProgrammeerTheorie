@@ -1,6 +1,4 @@
 import sys
-sys.path.append("..")
-sys.path.append("../A")
 import main
 import csv
 
@@ -33,8 +31,8 @@ def calculatescore(pathtofile, fueltype=1, cargolistnum=1, spacecraftfile=""):
 
 	spacecraftlist = [spacecraft for spacecraft in spaceCraftId.keys()]
 	# Now merge 5 rows together, so every attempt is in its own list
-	attemptlist = [data[x:x + len(spacecraftlist)+1] for x in range(0, len(data), 5)]
-
+	attemptlist = [data[x:x + len(spacecraftlist)+1] for x in range(0, len(data), len(spacecraftlist)+1)]
+	print(attemptlist)
 	# Initiate a bestcost and the item with the best cost
 	bestList = []
 	bestCost = 100000000000000000000000000
@@ -42,9 +40,14 @@ def calculatescore(pathtofile, fueltype=1, cargolistnum=1, spacecraftfile=""):
 
 	# Get the highest score
 	highest = 0
-	for item in attemptlist:
-		if int(item[0][4]) > int(highest):
-			highest = item[0][4]
+	if spacecraftfile == "DE":
+		for item in attemptlist:
+			if int(item[0][6]) > int(highest):
+				highest = item[0][6]
+	else:
+		for item in attemptlist:
+			if int(item[0][4]) > int(highest):
+				highest = item[0][4]
 
 	for item in attemptlist:
 		if int(item[0][4]) == int(highest):
@@ -128,10 +131,10 @@ def printResult(price, parcellist, dollars, priceNR, parcellistNR, dollarsNR):
 
 if __name__ == '__main__':
 	# Get the information with the real fuel to weight values
-	price, parcellist, dollars = calculatescore("../A/record.csv", 1, 1)
+	price, parcellist, dollars = calculatescore("D/OptimalFinalResulsts.csv", 1, 3, "DE")
 
 	# Get the information with the fake fuel to weight values
-	priceNR, parcellistNR, dollarsNR = calculatescore("../A/record.csv", 2, 1)
+	priceNR, parcellistNR, dollarsNR = calculatescore("D/OptimalFinalResulsts.csv", 1, 3, "DE")
 
 	printResult(price, parcellist, dollars, priceNR, parcellistNR, dollarsNR)
 
