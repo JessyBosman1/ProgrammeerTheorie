@@ -24,6 +24,9 @@ Elk algorithme voert zichzelf uit via de __main__ functie in het script, waar de
 
 ## Map structuur
 
+### documentation
+Alle uitleg bij documenten en experimentaties. 
+
 ### data
 bevat .csv bestanden van alle data, beschikbaar voor de functies om in te laden.
 ### scripts
