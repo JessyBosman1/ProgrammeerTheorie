@@ -135,5 +135,4 @@ if __name__ == '__main__':
 
     # Get the information with the fake fuel to weight values
     priceNR, parcellistNR, dollarsNR = calculatescore("A/record.csv", 2, 1)
-
     printResult(price, parcellist, dollars, priceNR, parcellistNR, dollarsNR)
