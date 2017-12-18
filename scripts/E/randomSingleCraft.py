@@ -7,7 +7,7 @@ import main
 import csv
 
 def randomSingleCraft(craftName, craftListN, cargoListN):
-    """"
+    """
     systematically fill one spacecraft multiple times until
     there are no more parcels left.
     """
@@ -48,15 +48,13 @@ def randomSingleCraft(craftName, craftListN, cargoListN):
 
         totalPrice = totalPrice + spaceCraftId[craftName].calculateCost(spaceCraftId[craftName].calculateFuel())
 
-        #parcelList = []
-
         print ("currentTripLoad: " + str(SpacecraftStorage))
         print ("currentTripNumber: " + str(nTrips))
         print ("currentTripAmount: " + str(packetCountCurrent))
         print ("totalprice: " + str(totalPrice))
 
 if __name__ == "__main__":
-    randomSingleCraft('Dragon', "DE", 3)
+    randomSingleCraft('TianZhou', "DE", 3)
 
 #25893000000.0   << TianZhou
 #39022500000.0   << Verne ATV

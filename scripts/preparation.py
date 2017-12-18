@@ -2,13 +2,9 @@ import main
 import random
 import itertools
 
-def prepareObjects():
-    spaceCraftId = main.createObjectsSpaceCraft()
-    cargoListId = main.createObjectsCargoList()
-    nameList = [ship for ship in spaceCraftId]
-    return spaceCraftId, cargoListId, nameList
-
 def parcelNormalizer(type):
+    """ calculate normalisation of parcels
+    """
     # Retrieve objects from the main.py
     cargoListId = main.createObjectsCargoList()
 
@@ -43,9 +39,10 @@ def parcelNormalizer(type):
     ranking = sorted(vectorizedParcels, key=vectorizedParcels.get, reverse=False)
     return ranking
 
-
-# Checks if which is more available: volume or weight if these are the same it chooses the main chosen ranking
 def findSpace(spaceCrafts, ship, chosen, weightList, volumeList):
+    """ Checks if which is more available: volume or weight
+        if these are the same it chooses the main chosen ranking
+    """
     volumeLeft = spaceCrafts[ship].currentPayload / spaceCrafts[ship].maxPayload * 100.0
     weightLeft = spaceCrafts[ship].currentPayloadMass / spaceCrafts[ship].maxPayloadMass * 100.0
 
@@ -56,30 +53,31 @@ def findSpace(spaceCrafts, ship, chosen, weightList, volumeList):
     else:
         return chosen[0], "p"
 
-
-# Makes sure that all the lists contain the samen values as the top50
 def shortlistMaker(top50, toShorten):
+    """ Makes sure that all the lists contain the samen values as the top50
+    """
     result=[]
     for x in toShorten:
         if x in top50:
             result.append(x)
     return result
 
-
-# 1: vector, 2: volume 3: weight
 def top50Maker(preference):
+    """ get top parcels, ranked on preference
+    # 1: vector, 2: volume 3: weight
+    """
     if preference == 1:
         top50 = parcelNormalizer(1)
         parcelRankVol = shortlistMaker(top50, parcelNormalizer(2))
-        parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))    
+        parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))
         return top50, parcelRankVol, parcelRankWeight
-    
+
     elif preference == 2:
         top50 = parcelNormalizer(2)
         parcelRankVol = shortlistMaker(top50, parcelNormalizer(2))
         parcelRankWeight = shortlistMaker(top50, parcelNormalizer(3))
         return top50, parcelRankVol, parcelRankWeight
-    
+
     else:
         top50 = parcelNormalizer(3)
         parcelRankVol = shortlistMaker(top50, parcelNormalizer(2))
