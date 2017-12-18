@@ -22,6 +22,9 @@ Om de visualisatie in werking te zien kan er worden genavigeerd naar de map vizu
 
 Elk algorithme voert zichzelf uit via de __main__ functie in het script, waar de juiste parameters al zijn ingevoerd. Andere parameters kunnen worden ingevoerd om het antwoord voor andere parcellijsten of spacecrafts door te rekenen.  
 
+## Vereisten
+Om alle code te kunnen, is het noodzakelijk om [Anaconda](https://www.anaconda.com/download/) en [matplotlib](https://matplotlib.org/users/installing.html) geïnstalleerd te hebben.
+
 ## Map structuur
 
 ### documentation
