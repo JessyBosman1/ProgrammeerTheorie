@@ -8,15 +8,18 @@ import preparation
 import csv
 import supportFunctionsHillClimber as supportHC
 
-def logicalSolution(spaceList):
+def logicalSolution():
+    """ Greedy algorithm that calculates the percentage of weight and volume
+        that is used after adding a parcel. If more weight than volume is filled,
+        it tries to fit packets with an higher weight first and the other way around
+    """
     spaceCraftId = main.createObjectsSpaceCraft()
     cargoListId = main.createObjectsCargoList()
-    nameList = [ship for ship in spaceCraftId]
+    spaceList = [ship for ship in spaceCraftId]
 
     # Shuffles the ships
     shuffleGen = itertools.permutations(spaceList, len(spaceList))
     shuffleList = [x for x in shuffleGen]
-
 
     maxScore = 79
     attempt = {}
@@ -30,7 +33,9 @@ def logicalSolution(spaceList):
         for ship in spacelist:
             spaceCraftId[ship].reset()
             cargo = {}
+
             # Change this number to choose the prefered sorting mechanism
+            # 1: vector, 2: volume 3: weight
             chosen, volumeList, weightList = preparation.top50Maker(1)
 
             # Remove already added parcels
@@ -42,6 +47,7 @@ def logicalSolution(spaceList):
 
             # Loops through all the parcels
             for x in range(0, len(chosen)):
+
                 # Finds the optimal parcel
                 parcel, symbol = preparation.findSpace(spaceCraftId, ship, chosen, volumeList, weightList)
 
@@ -78,10 +84,10 @@ def logicalSolution(spaceList):
     print (maxScore)
 
     filename = "solutionA.csv"
-    path = "../savedResults"
+    path = "savedResults"
     fullpath = os.path.join(path, filename)
 
     supportHC.getBestRun(attempt, spaceList, fullpath,cargoListId, spaceCraftId, True)
 
 if __name__ == "__main__":
-    logicalSolution(['Progress', 'Cygnus', 'Kounotori', 'Dragon'])
+    logicalSolution()

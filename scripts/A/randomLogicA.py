@@ -9,138 +9,93 @@ import randomA
 from random import shuffle
 import time
 
-def randomLogicA (numberofloops):
+def randomLogicA (numberofloops, numberofloopsRandom):
+    """ Function that empties the spacrafts Cygnus and Dragon and tries
+        to fit more parcels in total into the four spacecrafts.
+        Input: numberofLoops, number of loops that the function tries to 
+                              refill Cynus and Dragon
+               numberofLoopsRandom, number of loops that the random is runned 
+                                    before trying to refill the spacrafts
+    """
     starttime = time.time()
     cargoListId = main.createObjectsCargoList()
 
     # Get the output from RandomA
-    a, ax, b, bx, c, cx, d, dx, spaceCraftId = randomA.randomAlgorithm(100000, 78)
-    spaceshiplist = [a, b, c, d]
-    start = len(ax+bx+cx+dx)
+    spaceCraftId = randomA.randomAlgorithm(round(numberofloopsRandom/24), 78)
 
-    # Get all the used parcels
-    parcelList = []
-    for x in cargoListId.keys():
-        parcelList.append(x)
+    # Get all the parcels
+    parcelList = [x for x in cargoListId.keys()]
     parcelList.remove("CL1#83")
     parcelList.remove("CL1#58")
     parcelList.remove("CL1#34")
+    start = len(parcelList)
 
-    # Empty the spacecrafts Cygnus and Dragon
+    # Empty the spacecrafts Cygnus and Dragon and reset them
+    alreadyin = 0
     correction = 0
-    if a == "Cygnus":
-        correction += len(ax)
-        spaceCraftId['Cygnus'].reset()
-        spaceshiplist.remove(a)
-        ax = []
-    elif b == "Cygnus":
-        correction += len(bx)
-        spaceCraftId['Cygnus'].reset()
-        spaceshiplist.remove(b)
-        bx = []
-    elif c == "Cygnus":
-        correction += len(cx)
-        spaceCraftId['Cygnus'].reset()
-        spaceshiplist.remove(c)
-        cx = []
-    elif d == "Cygnus":
-        correction += len(dx)
-        spaceCraftId['Cygnus'].reset()
-        spaceshiplist.remove(d)
-        dx = []
+    for spacecraft in spaceCraftId.keys():
+        if spaceCraftId[spacecraft].spacecraft == "Cygnus" or spaceCraftId[spacecraft].spacecraft == "Dragon":
+            correction += len(spaceCraftId[spacecraft].parcellist)
+            spaceCraftId[spacecraft].reset()
+        else:
+            # Remove the parcels from Kounotori and Progress from the parcellist
+            # because the spacecrafts already have those parcels in it
+            alreadyin += len(spaceCraftId[spacecraft].parcellist)
+            parcelList = set(parcelList) - set(spaceCraftId[spacecraft].parcellist)
 
-    if a == "Dragon":
-        correction += len(ax)
-        spaceCraftId['Dragon'].reset()
-        spaceshiplist.remove(a)
-        ax = []
-    elif b == "Dragon":
-        correction += len(bx)
-        spaceCraftId['Dragon'].reset()
-        spaceshiplist.remove(b)
-        bx = []
-    elif c == "Dragon":
-        correction += len(cx)
-        spaceCraftId['Dragon'].reset()
-        spaceshiplist.remove(c)
-        cx = []
-    elif d == "Dragon":
-        correction += len(dx)
-        spaceCraftId['Dragon'].reset()
-        spaceshiplist.remove(d)
-        dx = []
+    # Convert the parcellist from a set to a list again
+    parcelList = list(parcelList)
 
-    # Create new random shuffle
-    spaceList = ['Cygnus', 'Dragon']
+    # Create new random shuffle for the two spacecrafts
+    spaceList = ["Cygnus", "Dragon"]
     shuffleGen = itertools.permutations(spaceList, len(spaceList))
     shuffleList = [x for x in shuffleGen]
 
-    # Remove the parcels from the other 2 spacecrafts from
-    # the list with all of the parcels
-    for parcel in ax:
-        parcelList.remove(parcel)
-    for parcel in bx:
-        parcelList.remove(parcel)
-    for parcel in cx:
-        parcelList.remove(parcel)
-    for parcel in dx:
-        parcelList.remove(parcel)
-
-    # Make the highest parcelnumber so far the memory count
+    # Make the highest parcelcount the memory count
     memorycount = 78
+
     print("<<START SECOND LOOP>>")
     for loop in range(numberofloops):
+
+        # Print the loop number now and then for the user
         if loop % 50000 == 0:
             print("Current loop number:", loop)
 
+        # Shuffle the parcels and set the packetcount
         random.shuffle(parcelList)
+        packetCount =  alreadyin
 
-        packetCount = start - correction
-
-        # Reset parameters of spacecraft / clear loading hold of spacecraft
         for spacer in shuffleList:
+            # Reset parameters of spacecraft / clear loading hold of spacecraft
             spaceCraftId['Cygnus'].reset()
             spaceCraftId['Dragon'].reset()
-            packetCount = start - correction
-
-            #print (start, len(parcelList), packetCount)
-
-
-            space0 = []
-            space1 = []
+            packetCount = alreadyin
 
             # Try to fit every parcel in a spacecraft
-            for i in parcelList:
-                parcel = str(i)
+            for parcel in parcelList:
+                for spacecraft in spacer:
+                    if spaceCraftId[spacecraft].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
+                        spaceCraftId[spacecraft].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+                        spaceCraftId[spacecraft].addParcelToParcellist(parcel)
+                        packetCount += 1
+                        break
 
-                # If there is room in the spacecraft, add the parcel
-                if spaceCraftId[spacer[0]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-                    spaceCraftId[spacer[0]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-                    space0.append(parcel)
-                    packetCount += 1
-                elif spaceCraftId[spacer[1]].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
-                    spaceCraftId[spacer[1]].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
-                    space1.append(parcel)
-                    packetCount += 1
-
-            #print (packetCount)
+            # If the packet count is higher than the memory count, let the user know
             if packetCount > memorycount:
                 memorycount = packetCount
-                print ('<<Details>>')
-                print (spacer[0], space0)
-                print ('---------------')
-                print (spacer[1], space1)
-                print ('---------------')
-                for y in spaceCraftId.keys():
-                    print(y)
-                    print ("Payload (current, max)", spaceCraftId[y].currentPayload, spaceCraftId[y].maxPayload,
-                       str(round(spaceCraftId[y].currentPayload / spaceCraftId[y].maxPayload * 100, 2)) + "%")
-                    print ("PayloadMass (current, max)", spaceCraftId[y].currentPayloadMass, spaceCraftId[y].maxPayloadMass, 
-                       str(round(spaceCraftId[y].currentPayloadMass / spaceCraftId[y].maxPayloadMass * 100, 2)) + "%")
-                print (spacer[0], len(space0), spacer[1], len(space1))#,"Progress", len(Progress), "Kounotori", len(Kounotori), "\n")
-                print ("Total: ", packetCount)
+                print ('<<Info>>')
+                for spacecraft in spaceList:
+                    print(spacecraft)
+                    print(len(spaceCraftId[spacecraft].parcellist), spaceCraftId[spacecraft].parcellist)
+                    print ("Payload (current, max)", spaceCraftId[spacecraft].currentPayload, spaceCraftId[spacecraft].maxPayload,
+                       str(round(spaceCraftId[spacecraft].currentPayload / spaceCraftId[spacecraft].maxPayload * 100, 2)) + "%")
+                    print ("PayloadMass (current, max)", spaceCraftId[spacecraft].currentPayloadMass, spaceCraftId[spacecraft].maxPayloadMass, 
+                       str(round(spaceCraftId[spacecraft].currentPayloadMass / spaceCraftId[spacecraft].maxPayloadMass * 100, 2)) + "%")
                 endtime = time.time()
-                print("Tijd: ", endtime - starttime)
+                print("Time: ", endtime - starttime, " seconds")
+                print ('<<Total of '+ str(memorycount) + ' parcels was found>>\n')
+
+    return memorycount
 
 if __name__ == '__main__':
-    randomLogicA(100000)
+    randomLogicA(400000, 300000)
