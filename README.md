@@ -9,8 +9,7 @@ Vincent Damen - 11034734
 
 
 ## Vergelijking algoritmen en algemene uitleg algoritmen
-[Alle documentatie is hier terug te vinden](/documentation/conclusions.md)
-
+[Alle documentatie is hier terug te vinden](/documentation)
 
 ## Getting started
 Om de scripts te runnen moet er in de commandline worden genavigeerd naar de map van de opdracht. Voor opdracht A dus naar de map A die in de map scripts staat etc. Door de scripts aan te roepen met python werken deze en printen deze een output.  
@@ -20,7 +19,7 @@ Om de visualisatie in werking te zien kan er worden genavigeerd naar de map vizu
 Elk algorithme voert zichzelf uit via de __main__ functie in het script, waar de juiste parameters al zijn ingevoerd. Andere parameters kunnen worden ingevoerd om het antwoord voor andere parcellijsten of spacecrafts door te rekenen.  
 
 ## Vereisten
-Om alle code te kunnen, is het noodzakelijk om [Anaconda](https://www.anaconda.com/download/) en [matplotlib](https://matplotlib.org/users/installing.html) geïnstalleerd te hebben.
+Om alle code te kunnen, is het noodzakelijk om [Anaconda](https://www.anaconda.com/download/) en [Matplotlib](https://matplotlib.org/users/installing.html) geïnstalleerd te hebben.
 
 ## Map structuur
 
