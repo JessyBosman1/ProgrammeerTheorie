@@ -4,9 +4,10 @@ import random
 import itertools
 import sys
 
-def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,wantedShipment):
-    sending = supportHC.openResults(filenameSendings)[1][wantedShipment]
-    CurrentCargoList = '../../data/' + outputFilename + '.csv'
+def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,wantedShipment,unusedInCsv=False,AddExtraParcels=[]):
+    unusedParcels, sending = openResults(filenameSendings,unusedInCsv)
+    sending = sending[wantedShipment]
+    CurrentCargoList = '../../data/CargoList' + outputFilename + '.csv'
     with open(CurrentCargoList, "w", newline='') as file:
         spamwriter = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(['parcel_ID','weight (kg)','volume (m^3)'])
@@ -16,17 +17,45 @@ def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,want
             stats.append(oldCargolistId[item].weight)
             stats.append(oldCargolistId[item].volume)
             spamwriter.writerow(stats)
+        for extra in AddExtraParcels:
+            if extra not in sending:
+                stats = []
+                stats.append(extra)
+                stats.append(oldCargolistId[extra].weight)
+                stats.append(oldCargolistId[extra].volume)
+                spamwriter.writerow(stats)
+    if unusedInCsv:
+        return unusedParcels
 
-def openResults(filename):
-	"""Haalt de attempt op uit een csv-bestand en returnt de spacelist
-	 en de verdeling"""
-	with open(filename, "r") as file:
-		reader = csv.reader(file)
-		dividedParcels = list(reader)
+def SaveToRetry(filename, UsedList):
+    name = [x for x in range(0,len(UsedList))]
+    with open(filename, "w", newline='') as file:
+        spamwriter = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow(name)
+        for item in UsedList:
+            spamwriter.writerow(item)
 
-	spaceList = dividedParcels[0]
-	dividedParcels = dividedParcels[1:]
-	return spaceList, dividedParcels
+
+
+def openResults(filename,unusedInCsv=False):
+    """Haalt de attempt op uit een csv-bestand en returnt de spacelist
+    en de verdeling"""
+    if(not unusedInCsv):
+        with open(filename, "r") as file:
+            reader = csv.reader(file)
+            dividedParcels = list(reader)
+
+        spaceList = dividedParcels[0]
+        dividedParcels = dividedParcels[1:]
+        return spaceList, dividedParcels
+    else:
+        with open(filename, "r") as file:
+            reader = csv.reader(file)
+            dividedParcels = list(reader)
+
+        unusedParcels = dividedParcels[-1]
+        dividedParcels = dividedParcels[1:-1]
+        return unusedParcels, dividedParcels
 
 def generateRandomList(filename, cargoListId, spaceCraftId, usedParcels=[]):
     """Genereert een randomship met inhoud op basis van de usedparcels"""
@@ -120,8 +149,9 @@ def getEfficiency(spaceList, cargoListId, spaceCraftId):
 def getFinancialResult(spaceList,cargoListId,spaceCraftId):
     price = 0
     for ship in spaceList:
-        fuel = ship.calculateFuel()
-        price += ship.calculateCost(fuel)
+        if spaceCraftId[ship].currentPayloadMass!=0:
+            fuel = spaceCraftId[ship].calculateFuel()
+            price += spaceCraftId[ship].calculateCost(fuel)
     return price
 
 
@@ -195,7 +225,7 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
             for x in output:
                 spamwriter.writerow(x)
 
-def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uParcels=[], returnUsedParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25, financialConstraint=False):
+def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uParcels=[], returnUsedParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25, financialConstraint=False, returnUnusedParcels=False):
     """De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
     recordBroken = 0
     unchanged = 0
@@ -216,6 +246,9 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                 sendToSave(dividedParcels, spaceList, highscoreFile, cargoListId, spaceCraftId)
                 if returnUsedParcels:
                     return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
+                elif returnUnusedParcels:
+                    used, unused, useless = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
+                    return used, unused
                 else:
                     return
 
@@ -281,4 +314,12 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                     dividedParcels = []
                     for x in dividedAttempt:
                         dividedParcels.append(x)
+    sendToSave(dividedParcels, spaceList, highscoreFile, cargoListId, spaceCraftId)
+    if returnUsedParcels:
+        return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
+    elif returnUnusedParcels:
+        used, unused, useless = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
+        return used, unused
+    else:
+        return
 
