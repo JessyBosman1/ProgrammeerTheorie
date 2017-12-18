@@ -77,13 +77,11 @@ def randomAlgorithm(numberofloops, stopnumber=97):
                 print("Time: ", endtime - starttime, " seconds")
                 print ('<<Total of '+ str(memoryCount) + ' parcels was found>>\n')
 
-            if packetCount == stopnumber or packetCount > stopnumber:
-                """Ja deze returnt even niks fix ik morgen, kusjes xxx"""
-                return packetCount
-                #spacer[0], space0, spacer[1], space1, spacer[2], space2, spacer[3], space3, spaceCraftId
-            # Keep track of the highest parcelcount
+            if packetCount >= stopnumber:
+                return spaceCraftId
 
+    return spaceCraftId
 
 if __name__ == '__main__':
-    randomAlgorithm(100000)
+    randomAlgorithm(100000, 73)
 
