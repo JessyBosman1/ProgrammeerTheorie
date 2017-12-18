@@ -84,7 +84,7 @@ def logicalSolution():
     print (maxScore)
 
     filename = "solutionA.csv"
-    path = "savedResults"
+    path = "records"
     fullpath = os.path.join(path, filename)
 
     supportHC.getBestRun(attempt, spaceList, fullpath,cargoListId, spaceCraftId, True)

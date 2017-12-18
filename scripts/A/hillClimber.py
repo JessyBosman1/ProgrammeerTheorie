@@ -14,7 +14,7 @@ def hillclimberA(numberofruns):
 	counter = 0
 	while(counter<random_runs):
 		# For further explanation, check supportFunctionsHillClimber.py
-		supportHC.hillClimber("random1.csv","random1Attempt_100x_1000000_20_5.csv","highScore_A.csv",cargoListId,spaceCraftId,[],False,5,100000,20)
+		supportHC.hillClimber("records/random1.csv","records/random1Attempt_100x_1000000_20_5.csv","records/highScore_A.csv",cargoListId,spaceCraftId,[],False,5,100000,20)
 		counter += 1
 
 if __name__ == "__main__":
