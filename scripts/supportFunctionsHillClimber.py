@@ -18,16 +18,17 @@ def MakeTemporaryCargoList(oldCargolistId, filenameSendings, outputFilename,want
             stats.append(oldCargolistId[item].volume)
             spamwriter.writerow(stats)
         for extra in AddExtraParcels:
-            stats = []
-            stats.append(extra)
-            stats.append(oldCargolistId[extra].weight)
-            stats.append(oldCargolistId[extra].volume)
-            spamwriter.writerow(stats)
+            if extra not in sending:
+                stats = []
+                stats.append(extra)
+                stats.append(oldCargolistId[extra].weight)
+                stats.append(oldCargolistId[extra].volume)
+                spamwriter.writerow(stats)
     if unusedInCsv:
         return unusedParcels
 
 def SaveToRetry(filename, UsedList):
-    name = [x for x in range(1,len(UsedList))]
+    name = [x for x in range(0,len(UsedList))]
     with open(filename, "w", newline='') as file:
         spamwriter = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(name)
@@ -246,7 +247,8 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                 if returnUsedParcels:
                     return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
                 elif returnUnusedParcels:
-                    return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0:1]
+                    used, unused, useless = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
+                    return used, unused
                 else:
                     return
 
@@ -316,7 +318,8 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
     if returnUsedParcels:
         return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
     elif returnUnusedParcels:
-        return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0:1]
+        used, unused, useless = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
+        return used, unused
     else:
         return
 
