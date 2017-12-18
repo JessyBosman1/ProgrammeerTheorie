@@ -31,11 +31,6 @@ def randomAlgorithm(numberofloops, stopnumber=97, memorycount=77, parcellist=1):
     # Create an random order of parcels
     randomList = [parcel for parcel in cargoListId.keys()]
 
-    # Remove the heaviest parcels
-    #randomList.remove('CL1#83')
-    #randomList.remove('CL1#58')
-    #randomList.remove('CL1#34')
-
     for loop in range(numberofloops):
         # Print the number of runs every 240000
         if loop % 1000 == 0 and loop % 5000 != 0:
