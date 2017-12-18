@@ -9,8 +9,7 @@ Vincent Damen - 11034734
 
 
 ## Vergelijking algoritmen en algemene uitleg algoritmen
-[Alle documentatie is hier terug te vinden]
-(https://github.com/JessyBosman1/ProgrammeerTheorie/tree/master/documentation)
+[Alle documentatie is hier terug te vinden](https://github.com/JessyBosman1/ProgrammeerTheorie/tree/master/documentation)
 
 
 ## Getting started
