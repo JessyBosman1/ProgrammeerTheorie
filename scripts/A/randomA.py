@@ -1,4 +1,3 @@
-import csv
 import os.path
 import random
 import itertools
@@ -7,19 +6,19 @@ sys.path.append("..")
 import main
 from random import shuffle
 import time
-starttime = time.time()
 
-def randomAlgorithm(numberofloops, stopnumber=97):
+
+def randomAlgorithm(numberofloops, stopnumber=97, memorycount=77, parcellist=1):
     """ Function that fills the spacecrafts randomly.
         Input: numberofloops, the total number of attempts
                stopnumber, function returns highest attempt when 
                            this number of packets is reached
         Output: highest attempt found
     """
-
+    starttime = time.time()
     # Get the spacecraft and cargolist objects from main.py
     spaceCraftId = main.createObjectsSpaceCraft()
-    cargoListId = main.createObjectsCargoList()
+    cargoListId = main.createObjectsCargoList(parcellist)
 
     # Create all the different orders of spacecrafts
     spaceList = [spacecraft for spacecraft in spaceCraftId.keys()]
@@ -27,15 +26,15 @@ def randomAlgorithm(numberofloops, stopnumber=97):
     shuffleList = [x for x in shuffleGen]
 
     # Initialize a variable that keeps track of the largest number of parcels
-    memoryCount = 77
+    memoryCount = memorycount
 
     # Create an random order of parcels
     randomList = [parcel for parcel in cargoListId.keys()]
 
     # Remove the heaviest parcels
-    randomList.remove('CL1#83')
-    randomList.remove('CL1#58')
-    randomList.remove('CL1#34')
+    #randomList.remove('CL1#83')
+    #randomList.remove('CL1#58')
+    #randomList.remove('CL1#34')
 
     for loop in range(numberofloops):
         # Print the number of runs every 240000
@@ -83,5 +82,5 @@ def randomAlgorithm(numberofloops, stopnumber=97):
     return spaceCraftId
 
 if __name__ == '__main__':
-    randomAlgorithm(100000, 73)
+    randomAlgorithm(100000, 97, 77, 1)
 

@@ -1,13 +1,12 @@
 import sys
 sys.path.append("..")
-sys.path.append("../b")
 import main
 import csvReaderToScore
 
 def calculatecheapest():
 	# Run the calculation score function from excersice b
-	price, parcellist, dollars = csvReaderToScore.calculatescore("random2Attempt_100x_1000000_20_5.csv", 1, 2)
-	priceNR, parcellistNR, dollarsNR = csvReaderToScore.calculatescore("random2Attempt_100x_1000000_20_5.csv", 2, 2)
+	price, parcellist, dollars = csvReaderToScore.calculatescore("highScore_C.csv", 1, 2)
+	priceNR, parcellistNR, dollarsNR = csvReaderToScore.calculatescore("highScore_C.csv", 2, 2)
 	return price, parcellist, dollars, priceNR, parcellistNR, dollarsNR
 
 if __name__ == '__main__':
