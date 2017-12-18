@@ -17,7 +17,6 @@ def logicalSolution(spaceList):
     shuffleGen = itertools.permutations(spaceList, len(spaceList))
     shuffleList = [x for x in shuffleGen]
 
-
     maxScore = 79
     attempt = {}
     # Loop through all the permutations

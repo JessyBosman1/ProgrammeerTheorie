@@ -58,7 +58,8 @@ def plotData(spacecraft, cargoList):
     # show the plot
     plt.show()
 
-plotData("Cygnus",loadCygnus)
-plotData("Progress",loadProgress)
-plotData("Kounotori",loadKounotori)
-plotData("Dragon",loadDragon)
+if __name__ == "__main__":
+    plotData("Cygnus",loadCygnus)
+    plotData("Progress",loadProgress)
+    plotData("Kounotori",loadKounotori)
+    plotData("Dragon",loadDragon)
