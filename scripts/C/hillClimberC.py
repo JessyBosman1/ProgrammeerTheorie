@@ -9,6 +9,7 @@ def HillClimberC():
 	random_runs = 200000
 	counter = 0
 	while(counter<random_runs):
+		# For further explanation, check supportFunctionsHillClimber.py
 		supportHC.hillClimber("randomList2.csv","random2Attempt_100x_1000000_20_5.csv","highScore_C.csv",cargoListId,spaceCraftId,[],False,5,100000,20)
 
 if __name__ == "__main__":

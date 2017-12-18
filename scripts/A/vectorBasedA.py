@@ -39,7 +39,7 @@ def vectorBasedA(numberofloops):
 			options = True
 			strikes = 0
 
-			# Generate the parcel rank
+			# Generate the parcel rank and create an updated version without usedParcels
 			if len(RemoveParcels) == 0:
 				parcelRank = analyseA.parcelNormalizer()
 			else:
@@ -47,22 +47,26 @@ def vectorBasedA(numberofloops):
 				for x in RemoveParcels:
 					parcelRank.remove(x)
 
+			# Resets the ship, so it could be tested once again
 			spaceCraftId[ship].reset()
 			usedPackets = []
 
+			# This will try 
 			while(options):
 				if strikes == 10:
 					options = False
 				else:
 					parcel = random.choice(parcelRank)
 					parcelRank.remove(parcel)
+					# Checks if the parcel fits
 					if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False:
 						spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 						usedPackets.append(parcel)
 					else:
+						# It will be punished if it won't fit
 						strikes += 1
 			results[amount] = [usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]
-			
+			# Gets the best score
 			if lowestMass < results[amount][3]:
 				lowestMass = results[amount][3]
 				winner = [usedPackets,len(usedPackets),round(spaceCraftId[ship].maxPayload-spaceCraftId[ship].currentPayload,4), round(spaceCraftId[ship].maxPayloadMass-spaceCraftId[ship].currentPayloadMass,4)]

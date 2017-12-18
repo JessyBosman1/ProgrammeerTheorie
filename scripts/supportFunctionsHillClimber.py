@@ -101,42 +101,42 @@ def getParcels(dividedParcels, cargoListId, spaceCraftId,uParcels=[]):
     return usedParcels, unusedParcels, allParcels
 
 def parcelPicker(usedParcels, amount=10):
-	"""Chooses n random parcels to remove from from your ships"""
-	chosenParcels = []
+    """Chooses n random parcels to remove from from your ships"""
+    chosenParcels = []
 
-	for x in range(0, amount):
-		parcel = random.choice(usedParcels)
+    for x in range(0, amount):
+        parcel = random.choice(usedParcels)
 
-		if parcel not in chosenParcels:
-			chosenParcels.append(parcel)
+        if parcel not in chosenParcels:
+            chosenParcels.append(parcel)
 
-	return chosenParcels
+    return chosenParcels
 
 def parcelRemover(chosenParcels, dividedParcels, unusedParcels):
-	""" Removes the chosen parcels from the assigned parcels
+    """ Removes the chosen parcels from the assigned parcels
         and add them to the unused parcel list"""
-	dividedOutput = []
-	for ship in dividedParcels:
-		newShip = []
-		for parcel in ship:
-			if parcel not in chosenParcels:
-				newShip.append(parcel)
-			else:
-				unusedParcels.append(parcel)
-		dividedOutput.append(newShip)
-	return dividedOutput, unusedParcels
+    dividedOutput = []
+    for ship in dividedParcels:
+        newShip = []
+        for parcel in ship:
+            if parcel not in chosenParcels:
+                newShip.append(parcel)
+            else:
+                unusedParcels.append(parcel)
+        dividedOutput.append(newShip)
+    return dividedOutput, unusedParcels
 
 def prepareSpaceCrafts(spaceList, dividedParcels, cargoListId, spaceCraftId):
-	""" Prepares all the ships to restart an attempt"""
-	for ship in range(0,len(spaceList)):
-		shipName = spaceList[ship]
-		spaceCraftId[shipName].reset()
+    """ Prepares all the ships to restart an attempt"""
+    for ship in range(0,len(spaceList)):
+        shipName = spaceList[ship]
+        spaceCraftId[shipName].reset()
 
-		for parcel in dividedParcels[ship]:
-			spaceCraftId[shipName].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
+        for parcel in dividedParcels[ship]:
+            spaceCraftId[shipName].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
 
 def sendToSave(dividedParcels, spaceList, filename, cargoListId, spaceCraftId):
-	""" Prepares the input to print and save the results of the new highscore"""
+    """ Prepares the input to print and save the results of the new highscore"""
     output = {}
     output["attempt"] = {}
     for ship in range(0,len(spaceList)):
@@ -145,28 +145,28 @@ def sendToSave(dividedParcels, spaceList, filename, cargoListId, spaceCraftId):
 
 def getScore(dividedAttempt):
     """ Counts the amount of parcels in the shipment"""
-	countParcels = 0
-	for ship in dividedAttempt:
-		countParcels += len(ship)
-	return countParcels
+    countParcels = 0
+    for ship in dividedAttempt:
+        countParcels += len(ship)
+    return countParcels
 
 def getShipOrder(spaceList):
     """ Returns a list of ships placed in a random order"""
-	return sorted(spaceList, key=lambda k: random.random())
+    return sorted(spaceList, key=lambda k: random.random())
 
 def getEfficiency(spaceList, cargoListId, spaceCraftId):
     """ Calculates the efficiency of the ship, i.e. how full the ship is"""
-	percentageCounter = [0,0]
-	
+    percentageCounter = [0,0]
+    
     # For each ship we will calculate the percentage of fullness, in volume or mass
     for ship in spaceList:
-		percentageCounter[0] += spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100
-		percentageCounter[1] += spaceCraftId[ship].currentPayloadMass / spaceCraftId[ship].maxPayloadMass * 100
-	# Then we take the mean of the total means
+        percentageCounter[0] += spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100
+        percentageCounter[1] += spaceCraftId[ship].currentPayloadMass / spaceCraftId[ship].maxPayloadMass * 100
+    # Then we take the mean of the total means
     percentageCounter[0] = percentageCounter[0]/len(spaceList)
-	percentageCounter[1] = percentageCounter[1]/len(spaceList)
+    percentageCounter[1] = percentageCounter[1]/len(spaceList)
     # Finally we return the sum of the normalized volume and weight, divided by 2
-	return sum(percentageCounter)/2
+    return sum(percentageCounter)/2
 
 def getFinancialResult(spaceList,cargoListId,spaceCraftId):
     """ Calculate the total price of a shipment"""
@@ -180,10 +180,7 @@ def getFinancialResult(spaceList,cargoListId,spaceCraftId):
 
 
 def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printResults=False, storeResults=True, addResults=False):
-    """Deze functie vindt de beste run en slaat deze naderhand op in de aangewezen csv.
-    Met printresults kan je de informatie terugvinden in je terminal
-
-    This function finds the best run in a dict of attempts and stores this run in an assigned csv.
+    """ This function finds the best run in a dict of attempts and stores this run in an assigned csv.
     It is also used as the main store function of hillclimber."""
     craftOrder = [order for order in attempt.keys()]
     highPercentage = [0,0]
@@ -207,40 +204,38 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
                 spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
                 parcelCounter += 1
 
-            # Berekent het algemene percentage
+            # Calculate percentages of a ship
             percentageCounter[0] += spaceCraftId[ship].currentPayload / spaceCraftId[ship].maxPayload * 100
             percentageCounter[1] += spaceCraftId[ship].currentPayloadMass / spaceCraftId[ship].maxPayloadMass * 100
 
-        # Berekent het gemiddelde percentage
+        # Calculate total percentages
         percentageCounter[0] = percentageCounter[0]/len(spacelist)
         percentageCounter[1] = percentageCounter[1]/len(spacelist)
 
-        # update highscores
+        # Update highscores
         if sum(percentageCounter) / 2 > sum(highPercentage) / 2 and parcelCounter >= highAmount:
             highPercentage = percentageCounter
             highAmount = parcelCounter
             output = outputPreparation
             bestOrder = order
 
-    #als printresultaten gewenst zijn, print de functie het gedetailleerd uit
+    # If requested, print the results
     if printResults:
         print (bestOrder, highPercentage,highAmount)
         for x in range(0, len(spacelist)):
             print (spacelist[x], len(output[x]), output[x])
             print( "------------------------")
 
-
-
+    # If requested, store the results in a csv
     if storeResults:
-        # Slaat het op in de aangewezen csv
         with open(filename, 'w', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow(spacelist)
             for x in output:
                 spamwriter.writerow(x)
 
+    # If requested, add the results to a csv
     elif addResults:
-        # voegt het toe aan de csv
         with open(filename, 'a', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             firstRow = []
@@ -253,46 +248,70 @@ def getBestRun(attempt, spacelist, filename, cargoListId, spaceCraftId, printRes
                 spamwriter.writerow(x)
 
 def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uParcels=[], returnUsedParcels=False, removedParcels=5, totalIter=10000, attemptIter=20, failRule=25, financialConstraint=False, returnUnusedParcels=False):
-    """De hill climber functie zelf, gaat met dmv random toewijzingen opzoek naar verbeteringen"""
+    """
+    The main HillClimber function uses the hillclimbing principle to improve the division of parcels over an amount of ships.
+    The function contains a lot of flags and input variables, this is done to make the function as universal as possible.
+    Required input variables: Filename, savefile, highscorefile are used to store or retrieve data from.
+    cargolistId and spaceCraftId are two classes containing all the information about the parcels and ships.
+    Flags: uParcels are usedParcels that aren't allowed to be used again. This way we could restrict the hillClimber.
+    returnunusedParcels and returnUsedParcels, forces the HillClimber to return the (un)used parcels.
+    removedParcels indicates the parcels that will be removed, to improve the ship.
+    totalIter and attemptIter decide the amount of loops it will make before the hillclimber changes removed parcels or stops working.
+    The failrule is the constraint that will let the hillclimber after n*250 attempts if there is improvement.
+    Financial Constraint activates the hillclimber to also add a economical constraint
+    """
     recordBroken = 0
     unchanged = 0
     spaceList, dividedParcels = openResults(filename)
     runs = 0
+    # Prepares the parcels, to calculate the scores
     usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId,uParcels)
     prepareSpaceCrafts(spaceList,dividedParcels, cargoListId, spaceCraftId)
     highEfficiencyScore = getEfficiency(spaceList, cargoListId, spaceCraftId)
+
     if(financialConstraint):
         lowestPriceScore = getFinancialResult(spaceList,cargoListId,spaceCraftId)
+    
+    # Start climbing
     while(runs <= totalIter):
         combinationRuns = 0
         runs += 1
+        # Checkpoint, to notify the user how many runs it has been doing and creates a way out
         if runs %250 == 0:
             unchanged += 1
             print(runs*attemptIter, recordBroken)
+
             if unchanged == failRule:
                 sendToSave(dividedParcels, spaceList, highscoreFile, cargoListId, spaceCraftId)
+
                 if returnUsedParcels:
                     return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
+
                 elif returnUnusedParcels:
                     used, unused, useless = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
                     return used, unused
+
                 else:
                     return
 
         chosenParcels = parcelPicker(usedParcels, removedParcels)
-        #Combination attempt
-        while (combinationRuns <= attemptIter):
-            highScore = getScore(dividedParcels)
 
+        # While loop to do multiple attempts with a specific removed set of parcels
+        while (combinationRuns <= attemptIter):
+
+            # Prepares the variables
+            highScore = getScore(dividedParcels)
             usedParcels, unusedParcels, allParcels = getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)
             combinationRuns += 1
             dividedAttempt, unusedAttempt = parcelRemover(chosenParcels, dividedParcels, unusedParcels)
             prepareSpaceCrafts(spaceList, dividedAttempt, cargoListId, spaceCraftId)
-            #placing attempt
+            
+            # Start an attempt until unusedattempt is empty  
             while (len(unusedAttempt) != 0):
                 parcel = random.choice(unusedAttempt)
                 toPlace = True
-                #vind het juiste schip
+
+                # tries each parcels and removes it afterwars
                 for ship in getShipOrder(spaceList):
                     if spaceCraftId[ship].checkFitCraft(cargoListId[parcel].weight, cargoListId[parcel].volume) != False and toPlace:
                         spaceCraftId[ship].addParcelToCraft(cargoListId[parcel].weight, cargoListId[parcel].volume)
@@ -300,18 +319,24 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                         toPlace = False
                 unusedAttempt.remove(parcel)
 
-
+            # Check if financial scores matter
             if (financialConstraint):
+                # Determine if the result is a highscore
                 if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList, cargoListId, spaceCraftId) and lowestPriceScore>getFinancialResult(spaceList,cargoListId,spaceCraftId)):
+                    # Update variables
                     lowestPriceScore = getFinancialResult(spaceList, cargoListId, spaceCraftId)
                     print(getScore(dividedAttempt), highScore, lowestPriceScore)
                     unchanged = 0
+
                     sendToSave(dividedAttempt,spaceList, saveFile, cargoListId, spaceCraftId)
                     highEfficiencyScore=getEfficiency(spaceList, cargoListId, spaceCraftId)
                     recordBroken += 1
                     dividedParcels = []
+                    # Update DividedParcels
                     for x in dividedAttempt:
                         dividedParcels.append(x)
+
+                # Determine if the result is a highscore
                 elif(getScore(dividedAttempt)>highScore):
                     unchanged = 0
                     print(getScore(dividedAttempt), highScore, lowestPriceScore)
@@ -322,7 +347,10 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                     dividedParcels = []
                     for x in dividedAttempt:
                         dividedParcels.append(x)
+
             else:
+                
+                # Determine if the result is a highscore
                 if (getScore(dividedAttempt)>=highScore and highEfficiencyScore>getEfficiency(spaceList, cargoListId, spaceCraftId)):
                     print(getScore(dividedAttempt), highScore)
                     unchanged = 0
@@ -332,6 +360,8 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                     dividedParcels = []
                     for x in dividedAttempt:
                         dividedParcels.append(x)
+
+                # Determine if the result is a highscore
                 elif(getScore(dividedAttempt)>highScore):
                     unchanged = 0
                     print(getScore(dividedAttempt), highScore)
@@ -341,6 +371,8 @@ def hillClimber(filename, saveFile, highscoreFile, cargoListId, spaceCraftId, uP
                     dividedParcels = []
                     for x in dividedAttempt:
                         dividedParcels.append(x)
+
+    # End the function and returns requested variables
     sendToSave(dividedParcels, spaceList, highscoreFile, cargoListId, spaceCraftId)
     if returnUsedParcels:
         return getParcels(dividedParcels, cargoListId, spaceCraftId, uParcels)[0]
